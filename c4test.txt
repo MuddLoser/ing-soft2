@@ -4,47 +4,67 @@ workspace "Sistema de registro de incidentes" "Modelo C4" {
         user = person "Usuario del sistema" "Crea, administra, o supervisa incidentes según el rol que posee."
         basealu = softwareSystem "Registro de alumnos" "Un listado de los alumnos de los cursos del establecimiento."
         baseemp = softwareSystem "Registro de empleados" "Un listado de los empleados del establecimiento, incluyendo profesores, inspectores, auxiliares, etc."
+        
         incident = softwareSystem "Sistema de registro de incidentes" "Registra incidentes y conflictos de convivencia escolar y a los agentes involucrados." {
 
             frontend = container "UI" "Interfaz para interactuar con la plataforma web."
-            backend = container "Backend" "Dicta el funcionamiento de la plataforma web y controla su acceso."{
-                incidentAPI = component "API de incidentes" "Recibe peticiones de usuarios de acceder a incidentes y las envía a la capa lógica."
+            
+            backend = container "Backend" "Dicta el funcionamiento de la plataforma web y controla su acceso." {
+                
+                
+                incidentAPI = component "API de incidentes" "Recibe peticiones de acceder a incidentes o conflictos y las enruta a la capa lógica."
                 signAPI = component "API de autenticación" "Gestiona el acceso emitiendo tokens de sesión para el frontend."
-                incicomp = component "Gestión de incidentes" "Permite la creación de incidentes, gestiona su estado y orquesta la persistencia de datos.
+                
+                
+                caseManager = component "Gestor de Casos" "Permite crear y editar incidentes individuales."
+                conflictManager = component "Gestor de Conflictos" "Agrupa incidentes y analiza sus relaciones."
+                reportEngine = component "Motor de Reportes" "Procesa búsquedas, filtra históricos y genera estadísticas de solo lectura."
+                notificationService = component "Servicio de Notificaciones" "Construye y despacha alertas a la página principal."
+                
                 secucomp = component "Componente de seguridad" "Aplica control de acceso por roles y encriptación de credenciales."
 
-                incidentAPI -> incicomp "Enruta la petición validada hacia"
-                incidentAPI -> secucomp "Valida permisos y roles con"
-                signAPI -> secucomp "Enruta la validación de credenciales hacia"
+                incidentAPI -> caseManager "Enruta peticiones de casos a"
+                incidentAPI -> conflictManager "Enruta peticiones de conflictos a"
+                incidentAPI -> reportEngine "Enruta consultas de lectura a"
+                
+                incidentAPI -> secucomp "Valida tokens de sesión con"
+                signAPI -> secucomp "Delega validación de credenciales a"
+                
+                conflictManager -> notificationService "Dispara alertas usando"
             }
+            
             almacen = container "Registro de incidentes" "Almacenamiento de datos, conflictos, e incidentes."
-            data = container "Base de datos" "Información de usuario, historial de accesos, etc."
+            data = container "Base de datos de usuarios" "Información de usuario, historial de accesos, etc."
 
-            user -> incident "Interactua con incidentes mediante"
+            user -> incident "Interactúa con incidentes mediante"
 
-            user -> frontend "Interactua con la plataforma exclusivamente mediante"
-            frontend -> backend "Solicita funcionalidades de navegación e autenticación"
-            backend -> almacen "Obtiene los datos de los incidentes mediante"
-            backend -> data "Obtiene los datos para iniciar sesión mediante
+            user -> frontend "Interactúa con la plataforma exclusivamente mediante"
+            frontend -> backend "Solicita funcionalidades de navegación y autenticación a"
+            backend -> almacen "Obtiene y guarda evidencias en"
+            backend -> data "Lee y escribe registros en"
+            
             almacen -> baseemp "Referencia a los empleados involucrados desde"
             almacen -> basealu "Referencia a los alumnos involucrados desde"
             data -> baseemp "Referencia a los empleados involucrados desde"
 
-            frontend -> incidentAPI "Solicita funcionalidades de navegación, interacción y edición"
-            frontend -> signAPI "Solicita funcionalidades de seguridad y autenticación"
-            incicomp -> almacen "Guarda y accede a incidentes en"
-            incicomp -> data "Consulta credenciales, roles y permisos en"
-            secucomp -> data "Consulta credenciales, roles y permisos en"
+            frontend -> incidentAPI "Solicita interacción y consulta vía"
+            frontend -> signAPI "Solicita autenticación vía"
+            
+            caseManager -> almacen "Guarda y accede a evidencias en"
+            caseManager -> data "Consulta credenciales, roles y permisos en"
+            
+            conflictManager -> almacen "Asocia evidencias del conflicto en"
+            conflictManager -> data "Consulta credenciales, roles y permisos en"
+            
+            secucomp -> data "Consulta credenciales y roles en"
         }
     }
 
     views {
-
         styles {
             element "Container" {
                 color #000000
             }
-            
             element "Component" {
                 color #000000
             }
@@ -60,7 +80,6 @@ workspace "Sistema de registro de incidentes" "Modelo C4" {
             include user
             include basealu
             include baseemp
-
             include frontend
             include backend
             include almacen
@@ -71,18 +90,20 @@ workspace "Sistema de registro de incidentes" "Modelo C4" {
         }
 
         component backend "Componentes" {
-            autolayout lr
             include almacen
             include data
             include frontend
 
             include incidentAPI
             include signAPI
-            include incicomp
+            include caseManager
+            include conflictManager
+            include reportEngine
+            include notificationService
             include secucomp
 
-            autolayout lr
-            title "C3 - Componentes "
+            autolayout tb
+            title "C3 - Componentes del Backend"
         }
 
         theme default
