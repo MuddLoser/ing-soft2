@@ -1,0 +1,90 @@
+workspace "Sistema de registro de incidentes" "Modelo C4" {
+
+    model {
+        user = person "Usuario del sistema" "Crea, administra, o supervisa incidentes según el rol que posee."
+        basealu = softwareSystem "Registro de alumnos" "Un listado de los alumnos de los cursos del establecimiento."
+        baseemp = softwareSystem "Registro de empleados" "Un listado de los empleados del establecimiento, incluyendo profesores, inspectores, auxiliares, etc."
+        incident = softwareSystem "Sistema de registro de incidentes" "Registra incidentes y conflictos de convivencia escolar y a los agentes involucrados." {
+
+            frontend = container "UI" "Interfaz para interactuar con la plataforma web."
+            backend = container "Backend" "Dicta el funcionamiento de la plataforma web y controla su acceso."{
+                incidentAPI = component "API de incidentes" "Recibe peticiones de usuarios de acceder a incidentes y las envía a la capa lógica."
+                signAPI = component "API de autenticación" "Gestiona el acceso emitiendo tokens de sesión para el frontend."
+                incicomp = component "Gestión de incidentes" "Permite la creación de incidentes, gestiona su estado y orquesta la persistencia de datos.
+                secucomp = component "Componente de seguridad" "Aplica control de acceso por roles y encriptación de credenciales."
+
+                incidentAPI -> incicomp "Enruta la petición validada hacia"
+                incidentAPI -> secucomp "Valida permisos y roles con"
+                signAPI -> secucomp "Enruta la validación de credenciales hacia"
+            }
+            almacen = container "Registro de incidentes" "Almacenamiento de datos, conflictos, e incidentes."
+            data = container "Base de datos" "Información de usuario, historial de accesos, etc."
+
+            user -> incident "Interactua con incidentes mediante"
+
+            user -> frontend "Interactua con la plataforma exclusivamente mediante"
+            frontend -> backend "Solicita funcionalidades de navegación e autenticación"
+            backend -> almacen "Obtiene los datos de los incidentes mediante"
+            backend -> data "Obtiene los datos para iniciar sesión mediante
+            almacen -> baseemp "Referencia a los empleados involucrados desde"
+            almacen -> basealu "Referencia a los alumnos involucrados desde"
+            data -> baseemp "Referencia a los empleados involucrados desde"
+
+            frontend -> incidentAPI "Solicita funcionalidades de navegación, interacción y edición"
+            frontend -> signAPI "Solicita funcionalidades de seguridad y autenticación"
+            incicomp -> almacen "Guarda y accede a incidentes en"
+            incicomp -> data "Consulta credenciales, roles y permisos en"
+            secucomp -> data "Consulta credenciales, roles y permisos en"
+        }
+    }
+
+    views {
+
+        styles {
+            element "Container" {
+                color #000000
+            }
+            
+            element "Component" {
+                color #000000
+            }
+        }
+
+        systemContext incident "Contexto" {
+            include *
+            autolayout lr
+            title "C1 - Contexto del sistema"
+        }
+
+        container incident "Contenedores" {
+            include user
+            include basealu
+            include baseemp
+
+            include frontend
+            include backend
+            include almacen
+            include data 
+
+            autolayout lr
+            title "C2 - Contenedores"
+        }
+
+        component backend "Componentes" {
+            autolayout lr
+            include almacen
+            include data
+            include frontend
+
+            include incidentAPI
+            include signAPI
+            include incicomp
+            include secucomp
+
+            autolayout lr
+            title "C3 - Componentes "
+        }
+
+        theme default
+    }
+}
