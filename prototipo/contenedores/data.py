@@ -1,18 +1,21 @@
 """
 Contenedor: Base de datos de usuarios (data)
-C4: "Información de usuario, historial de accesos, etc."
+C4: "Informacion de usuario, historial de accesos, etc."
 
-Simula la base de datos relacional con usuarios, sesiones y alertas.
+Almacena los usuarios del sistema (Personal con acceso al sistema),
+incluyendo los atributos del modelo conceptual: nombre, rut, contacto, direccion, rol.
 """
 
 
 class BaseDatosUsuarios:
     def __init__(self):
-        # Usuarios pre-cargados para la simulación
         self.usuarios = {
             1: {
                 "id": 1,
                 "nombre": "María González",
+                "rut": "12.345.678-9",
+                "contacto": "maria.gonzalez@colegio.cl",
+                "direccion": "Calle Los Pinos 456, Providencia",
                 "email": "maria.gonzalez@colegio.cl",
                 "rol": "docente",
                 "password_hash": "hash_simulado_123",
@@ -20,6 +23,9 @@ class BaseDatosUsuarios:
             2: {
                 "id": 2,
                 "nombre": "Carlos Muñoz",
+                "rut": "11.222.333-4",
+                "contacto": "carlos.munoz@colegio.cl",
+                "direccion": "Av. Irarrázaval 890, Ñuñoa",
                 "email": "carlos.munoz@colegio.cl",
                 "rol": "inspector",
                 "password_hash": "hash_simulado_456",
@@ -27,6 +33,9 @@ class BaseDatosUsuarios:
             3: {
                 "id": 3,
                 "nombre": "Ana Sepúlveda",
+                "rut": "10.555.666-7",
+                "contacto": "ana.sepulveda@colegio.cl",
+                "direccion": "Paseo Los Leones 321, Las Condes",
                 "email": "ana.sepulveda@colegio.cl",
                 "rol": "encargado_convivencia",
                 "password_hash": "hash_simulado_789",
@@ -41,7 +50,7 @@ class BaseDatosUsuarios:
             if u["email"] == email:
                 print(f"    [BD Usuarios] Usuario encontrado: {u['nombre']} ({u['rol']}).")
                 return u
-        print(f"    [BD Usuarios] No se encontró usuario con email '{email}'.")
+        print(f"    [BD Usuarios] No se encontro usuario con email '{email}'.")
         return None
 
     def obtener_usuario(self, user_id: int) -> dict | None:
@@ -51,22 +60,22 @@ class BaseDatosUsuarios:
         token = f"TOKEN-{self._next_token}"
         self.sesiones[token] = user_id
         self._next_token += 1
-        print(f"    [BD Usuarios] Sesión creada: {token} para usuario #{user_id}.")
+        print(f"    [BD Usuarios] Sesion creada: {token} para usuario #{user_id}.")
         return token
 
     def validar_sesion(self, token: str) -> dict | None:
         user_id = self.sesiones.get(token)
         if user_id:
             usuario = self.usuarios[user_id]
-            print(f"    [BD Usuarios] Sesión válida: {usuario['nombre']} ({usuario['rol']}).")
+            print(f"    [BD Usuarios] Sesion valida: {usuario['nombre']} ({usuario['rol']}).")
             return usuario
-        print(f"    [BD Usuarios] Sesión inválida o expirada: {token}.")
+        print(f"    [BD Usuarios] Sesion invalida o expirada: {token}.")
         return None
 
     def eliminar_sesion(self, token: str) -> bool:
         if token in self.sesiones:
             del self.sesiones[token]
-            print(f"    [BD Usuarios] Sesión {token} eliminada.")
+            print(f"    [BD Usuarios] Sesion {token} eliminada.")
             return True
         return False
 

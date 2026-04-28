@@ -2,125 +2,105 @@
 Contenedor: Registro de incidentes (almacen)
 C4: "Almacenamiento de datos, conflictos, e incidentes."
 
-Entidades del modelo conceptual:
-  - Incidente: id_i, titulo_i, descripcion_i, fecha_i, estado_i
-  - Conflicto:  id_c, titulo_c, descripcion_c, fecha_c, estado_c
-  - Solucion:   estado_s, descripcion_s, resultados
-  - Historial:  agrupa Incidentes de un Estudiante (relacion 1..*)
+Persiste instancias de las clases del modelo conceptual:
+  Incidente, Solucion, Conflicto, Historial
 """
+
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from modelos.incidente import Incidente
+from modelos.solucion import Solucion
+from modelos.conflicto import Conflicto
+from modelos.historial import Historial
 
 
 class RegistroIncidentes:
     def __init__(self):
-        self.incidentes: dict[int, dict] = {}
-        self.conflictos: dict[int, dict] = {}
-        self.soluciones: dict[int, dict] = {}
-        self.historiales: dict[str, dict] = {}  # rut_estudiante -> historial
+        self.incidentes: dict[int, Incidente] = {}
+        self.soluciones: dict[int, Solucion] = {}
+        self.conflictos: dict[int, Conflicto] = {}
+        self.historiales: dict[str, Historial] = {}  # rut -> Historial
         self.evidencias: dict[str, dict] = {}
-        self._next_id = 1
-        self._next_conflicto_id = 1
+        self._next_incidente_id = 1
         self._next_solucion_id = 1
+        self._next_conflicto_id = 1
 
     # ------------------------------------------------------------------
-    # Incidentes (atributos del modelo conceptual: id_i, titulo_i,
-    #             descripcion_i, fecha_i, estado_i)
+    # Incidentes
     # ------------------------------------------------------------------
 
-    def guardar_incidente(self, incidente: dict) -> int:
-        id_asignado = self._next_id
-        incidente["id_i"] = id_asignado
+    def guardar_incidente(self, incidente: Incidente) -> int:
+        id_asignado = self._next_incidente_id
+        incidente.id_i = id_asignado
         self.incidentes[id_asignado] = incidente
-        self._next_id += 1
-        print(f"    [Almacén] Incidente #{id_asignado} '{incidente.get('titulo_i', '')}' guardado.")
+        self._next_incidente_id += 1
+        print(f"    [Almacen] Incidente #{id_asignado} '{incidente.titulo_i}' guardado.")
         return id_asignado
 
-    def obtener_incidente(self, incidente_id: int) -> dict | None:
+    def obtener_incidente(self, incidente_id: int) -> Incidente | None:
         resultado = self.incidentes.get(incidente_id)
         if resultado:
-            print(f"    [Almacén] Incidente #{incidente_id} recuperado del almacenamiento.")
+            print(f"    [Almacen] Incidente #{incidente_id} recuperado.")
         else:
-            print(f"    [Almacén] Incidente #{incidente_id} no encontrado.")
+            print(f"    [Almacen] Incidente #{incidente_id} no encontrado.")
         return resultado
-
-    def actualizar_incidente(self, incidente_id: int, campos: dict) -> dict | None:
-        if incidente_id in self.incidentes:
-            self.incidentes[incidente_id].update(campos)
-            print(f"    [Almacén] Incidente #{incidente_id} actualizado.")
-            return self.incidentes[incidente_id]
-        return None
 
     def listar_incidentes(self, filtros: dict | None = None) -> list[dict]:
         resultados = list(self.incidentes.values())
         if filtros:
             if "estudiante_rut" in filtros:
                 rut = filtros["estudiante_rut"]
-                resultados = [i for i in resultados if rut in i.get("estudiantes_ruts", [])]
+                resultados = [i for i in resultados if rut in i.estudiantes_ruts]
             if "estado_i" in filtros:
-                resultados = [i for i in resultados if i.get("estado_i") == filtros["estado_i"]]
-        print(f"    [Almacén] Consulta ejecutada: {len(resultados)} incidente(s) encontrado(s).")
-        return resultados
+                resultados = [i for i in resultados if i.estado_i == filtros["estado_i"]]
+        print(f"    [Almacen] Consulta: {len(resultados)} incidente(s) encontrado(s).")
+        return [i.to_dict() for i in resultados]
 
     # ------------------------------------------------------------------
-    # Historial (relacion: un Estudiante tiene 1..* Incidentes agrupados)
+    # Historial (relacion Estudiante 1..* Incidentes)
     # ------------------------------------------------------------------
-
-    def obtener_o_crear_historial(self, rut_estudiante: str) -> dict:
-        if rut_estudiante not in self.historiales:
-            self.historiales[rut_estudiante] = {
-                "rut_estudiante": rut_estudiante,
-                "incidentes_ids": [],
-            }
-        return self.historiales[rut_estudiante]
 
     def registrar_incidente_en_historial(self, rut_estudiante: str, incidente_id: int) -> None:
-        historial = self.obtener_o_crear_historial(rut_estudiante)
-        if incidente_id not in historial["incidentes_ids"]:
-            historial["incidentes_ids"].append(incidente_id)
-        print(f"    [Almacén] Incidente #{incidente_id} registrado en historial de {rut_estudiante}.")
+        if rut_estudiante not in self.historiales:
+            self.historiales[rut_estudiante] = Historial(rut_estudiante)
+        self.historiales[rut_estudiante].agregar_incidente(incidente_id)
+        print(f"    [Almacen] Incidente #{incidente_id} registrado en historial de {rut_estudiante}.")
 
-    def obtener_historial_estudiante(self, rut_estudiante: str) -> dict:
-        return self.historiales.get(rut_estudiante, {
-            "rut_estudiante": rut_estudiante,
-            "incidentes_ids": [],
-        })
+    def obtener_historial_estudiante(self, rut_estudiante: str) -> Historial:
+        if rut_estudiante not in self.historiales:
+            return Historial(rut_estudiante)
+        return self.historiales[rut_estudiante]
 
     # ------------------------------------------------------------------
-    # Soluciones (atributos del modelo conceptual: estado_s,
-    #             descripcion_s, resultados)
+    # Soluciones
     # ------------------------------------------------------------------
 
-    def guardar_solucion(self, solucion: dict) -> int:
+    def guardar_solucion(self, solucion: Solucion) -> int:
         id_asignado = self._next_solucion_id
-        solucion["id"] = id_asignado
+        solucion.id = id_asignado
         self.soluciones[id_asignado] = solucion
         self._next_solucion_id += 1
-        print(f"    [Almacén] Solución #{id_asignado} guardada para incidente #{solucion.get('incidente_id')}.")
+        print(f"    [Almacen] Solucion #{id_asignado} guardada para incidente #{solucion.incidente_id}.")
         return id_asignado
 
-    def obtener_solucion(self, solucion_id: int) -> dict | None:
+    def obtener_solucion(self, solucion_id: int) -> Solucion | None:
         return self.soluciones.get(solucion_id)
 
-    def actualizar_solucion(self, solucion_id: int, campos: dict) -> dict | None:
-        if solucion_id in self.soluciones:
-            self.soluciones[solucion_id].update(campos)
-            print(f"    [Almacén] Solución #{solucion_id} actualizada.")
-            return self.soluciones[solucion_id]
-        return None
-
     # ------------------------------------------------------------------
-    # Conflictos (atributos del modelo conceptual: id_c, titulo_c,
-    #             descripcion_c, fecha_c, estado_c)
+    # Conflictos
     # ------------------------------------------------------------------
 
-    def guardar_conflicto(self, conflicto: dict) -> int:
+    def guardar_conflicto(self, conflicto: Conflicto) -> int:
         id_asignado = self._next_conflicto_id
-        conflicto["id_c"] = id_asignado
+        conflicto.id_c = id_asignado
         self.conflictos[id_asignado] = conflicto
         self._next_conflicto_id += 1
-        print(f"    [Almacén] Conflicto #{id_asignado} '{conflicto.get('titulo_c', '')}' guardado.")
+        print(f"    [Almacen] Conflicto #{id_asignado} '{conflicto.titulo_c}' guardado con {len(conflicto.incidentes_ids)} incidentes.")
         return id_asignado
 
-    def obtener_conflicto(self, conflicto_id: int) -> dict | None:
+    def obtener_conflicto(self, conflicto_id: int) -> Conflicto | None:
         return self.conflictos.get(conflicto_id)
 
     # ------------------------------------------------------------------
@@ -130,5 +110,5 @@ class RegistroIncidentes:
     def guardar_evidencia(self, incidente_id: int, nombre_archivo: str) -> str:
         ref = f"EV-{incidente_id}-{nombre_archivo}"
         self.evidencias[ref] = {"incidente_id": incidente_id, "archivo": nombre_archivo}
-        print(f"    [Almacén] Evidencia '{nombre_archivo}' asociada al incidente #{incidente_id}.")
+        print(f"    [Almacen] Evidencia '{nombre_archivo}' asociada al incidente #{incidente_id}.")
         return ref

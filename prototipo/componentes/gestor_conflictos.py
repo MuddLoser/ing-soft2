@@ -2,15 +2,17 @@
 Componente: Gestor de Conflictos (conflictManager)
 C4: "Agrupa incidentes y analiza sus relaciones."
 
-Usa los atributos del modelo conceptual para Conflicto:
-  id_c, titulo_c, descripcion_c, fecha_c, estado_c
-
-El Conflicto se crea a partir de una Solucion existente (relacion del modelo conceptual:
-Solucion 0..1 → Conflicto 1..1), y tambien puede agrupar multiples incidentes (CU8).
+Instancia la clase del modelo conceptual: Conflicto.
+El Conflicto agrupa 2+ Incidentes y puede vincularse a una Solucion existente
+(relacion del modelo conceptual: Solucion 0..1 -> Conflicto).
 Cubre el caso de uso: CU8 (agrupar en conflicto).
 """
 
-from datetime import datetime
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from modelos.conflicto import Conflicto
 
 
 class GestorConflictos:
@@ -24,7 +26,7 @@ class GestorConflictos:
         """CU8: Agrupa 2+ incidentes en un Conflicto y dispara alerta (RF6).
 
         Si se provee solucion_id, el conflicto queda vinculado a esa Solucion
-        (relacion Solucion 0..1 → Conflicto del modelo conceptual).
+        (relacion Solucion 0..1 -> Conflicto del modelo conceptual).
         """
         print(f"  [Gestor Conflictos] Agrupando incidentes {incidentes_ids} en conflicto '{titulo_c}'...")
 
@@ -38,37 +40,34 @@ class GestorConflictos:
                 print(f"  [Gestor Conflictos] ERROR: incidente #{iid} no encontrado.")
                 return {"ok": False, "error": f"Incidente #{iid} no existe"}
 
-        # Validar solucion si se provee
         if solucion_id is not None:
             sol = self.almacen.obtener_solucion(solucion_id)
             if not sol:
-                return {"ok": False, "error": f"Solución #{solucion_id} no existe"}
-            if sol.get("conflicto_id"):
-                return {"ok": False, "error": f"La solución #{solucion_id} ya está vinculada a un conflicto"}
+                return {"ok": False, "error": f"Solucion #{solucion_id} no existe"}
+            if sol.conflicto_id is not None:
+                return {"ok": False, "error": f"La solucion #{solucion_id} ya esta vinculada a un conflicto"}
 
-        conflicto = {
-            # Atributos del modelo conceptual
-            "titulo_c": titulo_c,
-            "descripcion_c": descripcion_c,
-            "fecha_c": datetime.now().isoformat(),
-            "estado_c": "abierto",
-            # Atributos de implementacion
-            "incidentes_ids": incidentes_ids,
-            "solucion_id": solucion_id,
-        }
+        conflicto = Conflicto(
+            titulo_c=titulo_c,
+            descripcion_c=descripcion_c,
+            incidentes_ids=incidentes_ids,
+            solucion_id=solucion_id,
+        )
 
         conflicto_id = self.almacen.guardar_conflicto(conflicto)
 
-        # Vincular incidentes al conflicto
+        # Vincular cada incidente al conflicto
         for iid in incidentes_ids:
-            self.almacen.actualizar_incidente(iid, {"conflicto_id": conflicto_id})
+            inc = self.almacen.obtener_incidente(iid)
+            if inc:
+                inc.conflicto_id = conflicto_id
 
-        # Vincular solucion al conflicto si existe
+        # Vincular la solucion al conflicto e implementarla
         if solucion_id is not None:
-            self.almacen.actualizar_solucion(solucion_id, {
-                "conflicto_id": conflicto_id,
-                "estado_s": "implementada",
-            })
+            sol = self.almacen.obtener_solucion(solucion_id)
+            if sol:
+                sol.conflicto_id = conflicto_id
+                sol.estado_s = "implementada"
 
         self.notificaciones.notificar_conflicto_creado(
             conflicto_id=conflicto_id,
@@ -77,4 +76,4 @@ class GestorConflictos:
         )
 
         print(f"  [Gestor Conflictos] Conflicto #{conflicto_id} creado exitosamente.")
-        return {"ok": True, "conflicto": conflicto}
+        return {"ok": True, "conflicto": conflicto.to_dict()}

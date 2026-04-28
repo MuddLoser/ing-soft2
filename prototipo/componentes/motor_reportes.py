@@ -2,8 +2,7 @@
 Componente: Motor de Reportes (reportEngine)
 C4: "Procesa busquedas, filtra historicos y genera estadisticas de solo lectura."
 
-Usa los atributos del modelo conceptual para Incidente (estado_i, titulo_i, etc.)
-y el Historial del Estudiante (relacion 1..*).
+Trabaja con instancias de Historial del modelo conceptual.
 Cubre los casos de uso: CU2 (consultar incidentes), CU3 (consultar historial).
 """
 
@@ -25,18 +24,17 @@ class MotorReportes:
         print(f"  [Motor Reportes] Consultando historial del estudiante {rut}...")
 
         historial = self.almacen.obtener_historial_estudiante(rut)
-        incidentes_ids = historial.get("incidentes_ids", [])
-        incidentes = [
-            self.almacen.obtener_incidente(iid)
-            for iid in incidentes_ids
-            if self.almacen.obtener_incidente(iid)
-        ]
+        incidentes = []
+        for iid in historial.incidentes_ids:
+            inc = self.almacen.obtener_incidente(iid)
+            if inc:
+                incidentes.append(inc.to_dict())
 
-        print(f"  [Motor Reportes] Historial: {len(incidentes)} incidente(s) encontrado(s) para {rut}.")
+        print(f"  [Motor Reportes] Historial: {len(incidentes)} incidente(s) para {rut}.")
         return {
             "ok": True,
             "rut": rut,
-            "historial": historial,
+            "historial": historial.to_dict(),
             "total": len(incidentes),
             "incidentes": incidentes,
         }
