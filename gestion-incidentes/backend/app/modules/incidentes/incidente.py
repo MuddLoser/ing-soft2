@@ -71,6 +71,13 @@ class GestorCasos:
         self.incidentes = self.repo.cargar_todos()
 
     def reportar_incidente(self, titulo, descripcion, estudiantes, nombre_docente):
+        if not nombre_docente or not nombre_docente.strip():
+            raise ValueError("El nombre del adulto responsable es obligatorio.")
+        if not titulo or not titulo.strip():
+            raise ValueError("El incidente debe tener un titulo.")
+        if not descripcion or not descripcion.strip():
+            raise ValueError("Debe ingresar una descripcion.")
+
         nuevo_id = max([inc.id_i for inc in self.incidentes], default=0) + 1
         fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
         estado_inicial = "Reportado"
