@@ -29,7 +29,7 @@ npm install
 ```
 
 
-## 1. Backend 
+## Ejecutar el backend 
 
 ### Desde: `gestion-incidentes/backend/app`
 
