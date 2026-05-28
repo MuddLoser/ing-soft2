@@ -1,4 +1,4 @@
-# Instalación y ejecución del frontend
+# Instalación y ejecución
 
 ## Requisitos previos
 
@@ -28,9 +28,37 @@ Instala las dependencias:
 npm install
 ```
 
+
+## 1. Backend 
+
+### Desde: `gestion-incidentes/backend/app`
+
+```bash
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar el servidor
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+El backend estará disponible en `http://localhost:8000`. Para detener, presiona:
+
+```bash
+Ctrl + C
+```
+
+**Datos guardados en:** `gestion-incidentes/backend/app/modules/incidentes/incidentes.json`
+
+
+## Notas Importantes
+
+- El archivo `incidentes.json` se genera automáticamente cuando se registra el primer incidente
+- Los datos persisten entre sesiones (guardados en JSON)
+
+
 ## Ejecutar el frontend
 
-Inicia el servidor de desarrollo:
+En una consola aparte, inicia el servidor de desarrollo:
 
 ```bash
 npm run dev

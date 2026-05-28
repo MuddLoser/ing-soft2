@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-ARCHIVO_DATOS = 'incidentes.json'
+ARCHIVO_DATOS = os.path.join(os.path.dirname(__file__), 'incidentes.json')
 
 class Incidente:
     def __init__(self, id_i, titulo_i, descripcion_i, fecha_i, estado_i, estudiantes_asociados, reportado_por):

@@ -1,0 +1,26 @@
+[
+    {
+        "id_i": 1,
+        "titulo_i": "No se pudo registrar el incidente. Revise la conexión con el backend.",
+        "descripcion_i": "No se pudo registrar el incidente. Revise la conexión con el backend.",
+        "fecha_i": "2026-05-27T22:04",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Martina Vargas",
+            "Joaquín López"
+        ],
+        "reportado_por": "Profesor Rodrigo Salazar — Matemáticas"
+    },
+    {
+        "id_i": 2,
+        "titulo_i": "Hola amigos",
+        "descripcion_i": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "fecha_i": "2026-05-27T23:23",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Benjamín Muñoz",
+            "Sofía Retamal"
+        ],
+        "reportado_por": "Inspectora Andrea Pinto"
+    }
+]

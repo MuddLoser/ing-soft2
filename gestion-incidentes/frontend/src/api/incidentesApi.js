@@ -15,3 +15,18 @@ export async function registrarIncidente(data) {
 
   return response.json();
 }
+
+export async function obtenerIncidentes() {
+  const response = await fetch(`${API_URL}/incidentes`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al obtener incidentes");
+  }
+
+  return response.json();
+}
