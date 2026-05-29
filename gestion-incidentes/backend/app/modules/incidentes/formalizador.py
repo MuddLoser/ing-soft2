@@ -4,6 +4,19 @@ class Formalizador:
     def __init__(self, gestor):
         self.gestor = gestor
 
+    def _parsear_fecha(self, fecha_str):
+        formatos = [
+            "%d/%m/%Y %H:%M",
+            "%Y-%m-%dT%H:%M",
+            "%Y-%m-%d"
+        ]
+        for fmt in formatos:
+            try:
+                return datetime.strptime(fecha_str, fmt)
+            except ValueError:
+                continue
+        return datetime.min
+
     def listar_incidentes(self):
         incidentes = [
             inc for inc in self.gestor.obtener_todos()
@@ -11,7 +24,7 @@ class Formalizador:
         ]
 
         incidentes.sort(
-            key=lambda x: datetime.strptime(x.fecha_i, "%d/%m/%Y %H:%M")
+            key=lambda x: self._parsear_fecha(x.fecha_i)
         )
 
         return incidentes

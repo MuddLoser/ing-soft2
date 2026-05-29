@@ -1,0 +1,14 @@
+[
+    {
+        "id_i": 1,
+        "titulo_i": "Benjamin golpea a Martina",
+        "descripcion_i": "Durante la tarde del Martes el alumno Benjamin Muñoz, en pleno patio golpeó a su compañera Martina en la cara con un palo.",
+        "fecha_i": "2026-05-28T23:27",
+        "estado_i": "Formalizado",
+        "estudiantes_asociados": [
+            "Benjamín Muñoz",
+            "Martina Perez"
+        ],
+        "reportado_por": "Inspectora Andrea Pinto"
+    }
+]
