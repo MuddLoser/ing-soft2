@@ -6,9 +6,9 @@ const TODOS_LOS_ESTUDIANTES = [
   { id: 1, name: "Martina Perez", grade: "2°A", initials: "MV" },
   { id: 2, name: "Joaquín López", grade: "2°A", initials: "JL" },
   { id: 3, name: "Benjamín Muñoz", grade: "3°B", initials: "BM" },
-  { id: 4, name: "Sofía Henriquez", grade: "1°C", initials: "SR" },
+  { id: 4, name: "Sofía Henriquez", grade: "1°C", initials: "SH" },
   { id: 5, name: "Mateo Sanhueza", grade: "4°A", initials: "MS" },
-  { id: 6, name: "Miguel Jackson", grade: "2°B", initials: "FC" },
+  { id: 6, name: "Miguel Jackson", grade: "2°B", initials: "MJ" },
 ];
 
 const categories = [

@@ -4,9 +4,9 @@ const TODOS_LOS_ESTUDIANTES = [
   { id: 1, name: "Martina Vargas", grade: "2°A", initials: "MV", rut: "21.345.678-9" },
   { id: 2, name: "Joaquín López", grade: "2°A", initials: "JL", rut: "21.112.233-4" },
   { id: 3, name: "Benjamín Muñoz", grade: "3°B", initials: "BM", rut: "20.987.654-3" },
-  { id: 4, name: "Sofía Henriquez", grade: "1°C", initials: "SR", rut: "22.456.789-0" },
+  { id: 4, name: "Sofía Henriquez", grade: "1°C", initials: "SH", rut: "22.456.789-0" },
   { id: 5, name: "Mateo Sanhueza", grade: "4°A", initials: "MS", rut: "19.876.543-2" },
-  { id: 6, name: "Miguel Jackson", grade: "2°B", initials: "FC", rut: "21.555.666-7" },
+  { id: 6, name: "Miguel Jackson", grade: "2°B", initials: "MJ", rut: "21.555.666-7" },
 ];
 
 function DirectorioEstudiantil() {
