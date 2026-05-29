@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Icon from "../../../shared/icons/Icon";
-import { obtenerIncidentes, formalizarIncidente, asignarSolucion } from "../../../api/incidentesApi";
+import { getIncidentes, formalizarIncidente, asignarSolucion } from "../../../api/incidentesApi";
 
 function PanelControl() {
   const [incidentes, setIncidentes] = useState([]);
@@ -10,7 +10,7 @@ function PanelControl() {
   const [textoSolucion, setTextoSolucion] = useState("");
 
   const cargarDatos = () => {
-    obtenerIncidentes()
+    getIncidentes()
       .then((data) => {
         setIncidentes(data);
         setLoading(false);
@@ -27,9 +27,7 @@ function PanelControl() {
 
   const handleFormalizar = async (id) => {
     try {
-
       await formalizarIncidente(id);
-
       cargarDatos(); 
     } catch (error) {
       console.error("Error al formalizar", error);
@@ -37,21 +35,23 @@ function PanelControl() {
     }
   };
 
+  // Abre la ventana y limpia el texto
   const abrirModalSolucion = (id) => {
     setIncidenteSeleccionado(id);
     setTextoSolucion("");
   };
 
+  // Envía el texto a Python
   const handleGuardarSolucion = async () => {
     if (!textoSolucion.trim()) {
       alert("Debe escribir una solución.");
       return;
     }
-
+    
     try {
       await asignarSolucion(incidenteSeleccionado, textoSolucion);
-      setIncidenteSeleccionado(null); 
-      cargarDatos(); 
+      setIncidenteSeleccionado(null); // Cierra la ventana
+      cargarDatos(); // Recarga la lista para mostrar el texto nuevo
     } catch (error) {
       console.error(error);
       alert("Error al guardar la solución");
@@ -67,30 +67,35 @@ function PanelControl() {
       <div className="card">
         <div className="card-header">
           <h2>Incidentes Recientes</h2>
+          <p>Listado de todos los sucesos de convivencia registrados en el sistema.</p>
         </div>
 
         <div style={{ padding: "24px" }}>
           {loading ? (
-            <p>Cargando incidentes...</p>
-          ) : incidentes.length === 0 ? (
+            <p>Cargando incidentes desde Python...</p>
+          ) : !Array.isArray(incidentes) || incidentes.length === 0 ? (
             <p style={{ color: "var(--ink-500)" }}>No hay incidentes registrados aún.</p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              
               {incidentes.map((inc) => (
                 <div key={inc.id_i} style={{ padding: "16px", border: "1px solid var(--line)", borderRadius: "8px", background: "#fff" }}>
+                  
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
                     <strong style={{ fontSize: "16px", color: "var(--teal-800)" }}>{inc.titulo_i}</strong>
                     <span style={{ fontSize: "13px", color: "var(--ink-500)", background: "var(--bg-2)", padding: "4px 8px", borderRadius: "4px" }}>
                       Folio: {inc.id_i}
                     </span>
                   </div>
-
-                  <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "var(--ink-700)" }}>{inc.descripcion_i}</p>
+                  
+                  <p style={{ margin: "0 0 12px 0", fontSize: "14px", color: "var(--ink-700)" }}>{inc.descripcion_i}</p>
                   
                   <div style={{ display: "flex", gap: "16px", fontSize: "13px", color: "var(--ink-500)" }}>
                     <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Icon name="calendar" size={14} /> {inc.fecha_i}</span>
                     <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Icon name="users" size={14} /> {inc.estudiantes_asociados?.join(", ")}</span>
-                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Icon name="shield" size={14} /> {inc.estado_i}</span>
+                    <span style={{ display: "flex", alignItems: "center", gap: "4px", color: inc.estado_i === "Formalizado" ? "var(--teal-700)" : "inherit", fontWeight: inc.estado_i === "Formalizado" ? "bold" : "normal" }}>
+                      <Icon name="shield" size={14} /> {inc.estado_i}
+                    </span>
                   </div>
 
                   <div style={{ marginTop: "16px", paddingTop: "12px", borderTop: "1px solid var(--line)", display: "flex", gap: "8px" }}>
@@ -121,13 +126,16 @@ function PanelControl() {
                       </div>
                     )}
                   </div>
+
                 </div>
               ))}
+              
             </div>
           )}
         </div>
       </div>
 
+      {/* --- VENTANA EMERGENTE (MODAL) PARA LA SOLUCIÓN --- */}
       {incidenteSeleccionado && (
         <div style={{ 
           position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", 
@@ -139,7 +147,7 @@ function PanelControl() {
               Asignar Solución
             </h3>
             <p style={{ fontSize: "14px", color: "var(--ink-500)", marginBottom: "16px" }}>
-              Describa el plan de acción o la medida definitiva tomada para el incidente.
+              Describa el plan de acción o la medida definitiva tomada para el incidente folio {incidenteSeleccionado}.
             </p>
             
             <textarea
@@ -168,6 +176,7 @@ function PanelControl() {
           </div>
         </div>
       )}
+      
     </div>
   );
 }

@@ -9,6 +9,20 @@
             "Benjamín Muñoz",
             "Martina Perez"
         ],
-        "reportado_por": "Inspectora Andrea Pinto"
+        "reportado_por": "Inspectora Andrea Pinto",
+        "solucion_i": "Se golpeara a los alumnos"
+    },
+    {
+        "id_i": 2,
+        "titulo_i": "Violenta pelea",
+        "descripcion_i": "Durante el recreo de las 11:15, la alumna Sofía Henriquez tacleó de forma brutal a su compañero Miguel Jackson, rompiendole la nariz.",
+        "fecha_i": "2026-05-29T02:34",
+        "estado_i": "Formalizado",
+        "estudiantes_asociados": [
+            "Sofía Henriquez",
+            "Miguel Jackson"
+        ],
+        "reportado_por": "Profesor Rodrigo Salazar — Matemáticas",
+        "solucion_i": ""
     }
 ]

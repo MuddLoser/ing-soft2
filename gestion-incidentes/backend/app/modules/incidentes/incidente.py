@@ -1,8 +1,6 @@
 import json
 import os
-from datetime import datetime
-
-from prototipo.modelos import incidente
+from datetime import datetime   
 
 ARCHIVO_DATOS = os.path.join(os.path.dirname(__file__), 'incidentes.json')
 
@@ -53,48 +51,6 @@ class Incidente:
         print(f"DESCRIPCIÓN  :\n{self.descripcion_i}")
         print(f"SOLUCIÓN     : {self.solucion_i if self.solucion_i else 'Sin solución registrada'}")
 
-    def formalizar_incidente(self, id_incidente):
-        incidente = self.buscar_por_id(id_incidente)
-        if not incidente:
-            raise ValueError("Incidente no encontrado.")
-        if incidente.estado_i == "Formalizado":
-            raise ValueError("El incidente ya está formalizado.")
-        incidente.estado_i = "Formalizado"
-        self.repo.guardar_todos(self.incidentes)
-        return incidente
-    
-    def asignar_solucion(self, id_incidente, solucion):
-        incidente = self.buscar_por_id(id_incidente)
-        if not incidente:
-            raise ValueError("Incidente no encontrado.")
-        if incidente.estado_i != "Formalizado":
-            raise ValueError("El incidente debe estar formalizado.")
-        if not solucion.strip():
-            raise ValueError("Debe ingresar una solución.")
-        incidente.solucion_i = solucion
-        self.repo.guardar_todos(self.incidentes)
-        return incidente
-    
-    def editar_incidente(
-    self,
-    id_incidente,
-    nuevo_titulo=None,
-    nueva_descripcion=None,
-    nuevos_estudiantes=None,
-    nueva_solucion=None):
-        incidente = self.buscar_por_id(id_incidente)
-        if not incidente:
-            raise ValueError("Incidente no encontrado.")
-        if nuevo_titulo is not None and nuevo_titulo.strip():
-            incidente.titulo_i = nuevo_titulo
-        if nueva_descripcion is not None and nueva_descripcion.strip():
-            incidente.descripcion_i = nueva_descripcion
-        if nuevos_estudiantes is not None:
-            incidente.estudiantes_asociados = nuevos_estudiantes
-        if nueva_solucion is not None and nueva_solucion.strip():
-            incidente.solucion_i = nueva_solucion
-        self.repo.guardar_todos(self.incidentes)
-        return incidente
 
 class IncidenteRepository:
     def cargar_todos(self):
@@ -144,11 +100,57 @@ class GestorCasos:
         self.repo.guardar_todos(self.incidentes)
         return nuevo_incidente
 
-    def buscar_por_id(self, id_buscar):
-        return next((inc for inc in self.incidentes if inc.id_i == id_buscar), None)
+    def buscar_por_id(self, id_incidente):
+        for incidente in self.incidentes:
+            if str(incidente.id_i) == str(id_incidente):
+                return incidente
+        return None
 
     def obtener_todos(self):
         return self.incidentes
+    
+    def formalizar_incidente(self, id_incidente):
+        incidente = self.buscar_por_id(id_incidente)
+        if not incidente:
+            raise ValueError("Incidente no encontrado.")
+        if incidente.estado_i == "Formalizado":
+            raise ValueError("El incidente ya está formalizado.")
+        incidente.estado_i = "Formalizado"
+        self.repo.guardar_todos(self.incidentes)
+        return incidente
+    
+    def asignar_solucion(self, id_incidente, solucion):
+        incidente = self.buscar_por_id(id_incidente)
+        if not incidente:
+            raise ValueError("Incidente no encontrado.")
+        if incidente.estado_i != "Formalizado":
+            raise ValueError("El incidente debe estar formalizado.")
+        if not solucion.strip():
+            raise ValueError("Debe ingresar una solución.")
+        incidente.solucion_i = solucion
+        self.repo.guardar_todos(self.incidentes)
+        return incidente
+    
+    def editar_incidente(
+    self,
+    id_incidente,
+    nuevo_titulo=None,
+    nueva_descripcion=None,
+    nuevos_estudiantes=None,
+    nueva_solucion=None):
+        incidente = self.buscar_por_id(id_incidente)
+        if not incidente:
+            raise ValueError("Incidente no encontrado.")
+        if nuevo_titulo is not None and nuevo_titulo.strip():
+            incidente.titulo_i = nuevo_titulo
+        if nueva_descripcion is not None and nueva_descripcion.strip():
+            incidente.descripcion_i = nueva_descripcion
+        if nuevos_estudiantes is not None:
+            incidente.estudiantes_asociados = nuevos_estudiantes
+        if nueva_solucion is not None and nueva_solucion.strip():
+            incidente.solucion_i = nueva_solucion
+        self.repo.guardar_todos(self.incidentes)
+        return incidente
 
 
 def main():

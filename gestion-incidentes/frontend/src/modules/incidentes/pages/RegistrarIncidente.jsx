@@ -244,7 +244,6 @@ function RegistrarIncidente(props) {
                 <option>Baños</option>
                 <option>Fuera del establecimiento</option>
               </select>
-              <span className="hint">Campo visual preparado para próximas iteraciones.</span>
             </div>
           </div>
 
