@@ -24,7 +24,7 @@ const handleSubmit = async () => {
 
     } catch (err) {
       console.error(err);
-      setError("No se pudo registrar el incidente.");
+      setError("No se pudo registrar el incidente. Revise la conexión con el backend.");
     } finally {
       setLoading(false);
     }

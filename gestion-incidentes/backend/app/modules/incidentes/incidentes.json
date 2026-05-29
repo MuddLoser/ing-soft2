@@ -9,19 +9,6 @@
             "Benjamín Muñoz",
             "Martina Perez"
         ],
-        "reportado_por": "Inspectora Andrea Pinto",
-        "solucion_i": ""
-    },
-    {
-        "id_i": 2,
-        "titulo_i": "asdaas",
-        "descripcion_i": "asdaasasdaasasdaasasdaasasdaasasdaasasdaasasdaas",
-        "fecha_i": "2026-05-29T01:54",
-        "estado_i": "Reportado",
-        "estudiantes_asociados": [
-            "Joaquín López"
-        ],
-        "reportado_por": "Profesora Carla Mendoza — Lenguaje",
-        "solucion_i": ""
+        "reportado_por": "Inspectora Andrea Pinto"
     }
 ]

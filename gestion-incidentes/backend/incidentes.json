@@ -1,0 +1,26 @@
+[
+    {
+        "id_i": 1,
+        "titulo_i": "asasfdfb",
+        "descripcion_i": "fgfdfff",
+        "fecha_i": "2026-05-27T21:10",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Martina Vargas",
+            "Joaquín López"
+        ],
+        "reportado_por": "Inspectora Andrea Pinto"
+    },
+    {
+        "id_i": 2,
+        "titulo_i": "asdasd",
+        "descripcion_i": "ssggdfgassggdfgassggdfgasgdfgassggdfgassggdfgassggdfgassggdfgassggdfgassggdfgassggdfgassggdfgassggdfga",
+        "fecha_i": "2026-05-27T21:11",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Martina Vargas",
+            "Joaquín López"
+        ],
+        "reportado_por": "Inspectora Andrea Pinto"
+    }
+]

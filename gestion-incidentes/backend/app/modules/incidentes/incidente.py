@@ -2,7 +2,9 @@ import json
 import os
 from datetime import datetime
 
-ARCHIVO_DATOS = 'incidentes.json'
+from prototipo.modelos import incidente
+
+ARCHIVO_DATOS = os.path.join(os.path.dirname(__file__), 'incidentes.json')
 
 class Incidente:
     def __init__(self, id_i, titulo_i, descripcion_i, fecha_i, estado_i, estudiantes_asociados, reportado_por, solucion_i=""):
@@ -117,6 +119,13 @@ class GestorCasos:
         self.incidentes = self.repo.cargar_todos()
 
     def reportar_incidente(self, titulo, descripcion, estudiantes, nombre_docente):
+        if not nombre_docente or not nombre_docente.strip():
+            raise ValueError("El nombre del adulto responsable es obligatorio.")
+        if not titulo or not titulo.strip():
+            raise ValueError("El incidente debe tener un titulo.")
+        if not descripcion or not descripcion.strip():
+            raise ValueError("Debe ingresar una descripcion.")
+
         nuevo_id = max([inc.id_i for inc in self.incidentes], default=0) + 1
         fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
         estado_inicial = "Reportado"
