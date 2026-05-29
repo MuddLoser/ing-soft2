@@ -23,6 +23,18 @@
             "Miguel Jackson"
         ],
         "reportado_por": "Profesor Rodrigo Salazar — Matemáticas",
+        "solucion_i": "Los alumnos se darán la mano"
+    },
+    {
+        "id_i": 3,
+        "titulo_i": "Incidente en el baño",
+        "descripcion_i": "En la mañana del Viernes, el alumno Joaquín López fue sorprendido orinando en las paredes del baño en vez de los urinarios. Al ser cuestionado, responde que simplemente \"estaba aburrido\"",
+        "fecha_i": "2026-05-29T03:04",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Joaquín López"
+        ],
+        "reportado_por": "Profesora Carla Mendoza — Lenguaje",
         "solucion_i": ""
     }
 ]
