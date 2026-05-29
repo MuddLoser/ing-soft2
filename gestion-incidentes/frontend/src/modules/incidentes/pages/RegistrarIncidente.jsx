@@ -3,12 +3,12 @@ import Icon from "../../../shared/icons/Icon";
 import { registrarIncidente } from "../../../api/incidentesApi";
 
 const TODOS_LOS_ESTUDIANTES = [
-  { id: 1, name: "Martina Vargas", grade: "2°A", initials: "MV" },
+  { id: 1, name: "Martina Perez", grade: "2°A", initials: "MV" },
   { id: 2, name: "Joaquín López", grade: "2°A", initials: "JL" },
   { id: 3, name: "Benjamín Muñoz", grade: "3°B", initials: "BM" },
-  { id: 4, name: "Sofía Retamal", grade: "1°M", initials: "SR" },
+  { id: 4, name: "Sofía Henriquez", grade: "1°C", initials: "SR" },
   { id: 5, name: "Mateo Sanhueza", grade: "4°A", initials: "MS" },
-  { id: 6, name: "Florencia Cáceres", grade: "2°B", initials: "FC" },
+  { id: 6, name: "Miguel Jackson", grade: "2°B", initials: "FC" },
 ];
 
 const categories = [
@@ -153,9 +153,48 @@ function RegistrarIncidente(props) {
       )}
 
       {error && (
-        <div className="info-banner" style={{ borderColor: "#e2b6a4", background: "#fbeee8", color: "#8a2a14" }}>
-          <span className="ico"><Icon name="triangle" size={16} /></span>
-          <div>{error}</div>
+        <div 
+          className="info-banner" 
+          style={{ 
+            position: "fixed",
+            bottom: "28px",
+            right: "36px",
+            width: "380px",
+            maxWidth: "90vw",
+            borderColor: "#e2b6a4", 
+            background: "#fbeee8", 
+            color: "#8a2a14",
+            boxShadow: "0 8px 24px rgba(138, 42, 20, 0.15)",
+            zIndex: 9999,
+            margin: 0,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+            <span className="ico" style={{ color: "#8a2a14", marginTop: "2px" }}>
+              <Icon name="triangle" size={16} />
+            </span>
+            <div>{error}</div>
+          </div>
+          <button 
+            type="button"
+            onClick={() => setError("")}
+            style={{
+              background: "transparent",
+              border: 0,
+              color: "#8a2a14",
+              fontSize: "18px",
+              fontWeight: "bold",
+              lineHeight: 1,
+              padding: "0 4px",
+              cursor: "pointer"
+            }}
+            aria-label="Cerrar alerta"
+          >
+            ×
+          </button>
         </div>
       )}
 

@@ -1,9 +1,9 @@
 import Icon from "../shared/icons/Icon";
 
-function Sidebar() {
+function Sidebar({ vistaActual, cambiarVista }) {
   const items = [
     { id: "dash", label: "Panel de Control", icon: "grid" },
-    { id: "incident", label: "Registro de Incidentes", icon: "triangle", active: true },
+    { id: "incident", label: "Registro de Incidentes", icon: "triangle" },
     { id: "dir", label: "Directorio Estudiantil", icon: "users" },
     { id: "rep", label: "Reportes Académicos", icon: "chart" },
     { id: "cfg", label: "Configuración", icon: "gear" },
@@ -30,7 +30,9 @@ function Sidebar() {
         {items.map((item) => (
           <div
             key={item.id}
-            className={`nav-item ${item.active ? "active" : ""}`}
+            className={`nav-item ${vistaActual === item.id ? "active" : ""}`}
+            onClick={() => cambiarVista(item.id)}
+            style={{ cursor: "pointer" }}
           >
             <span className="ico">
               <Icon name={item.icon} size={18} />
@@ -41,7 +43,11 @@ function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <button className="btn-primary">
+        <button 
+          className="btn-primary" 
+          onClick={() => cambiarVista("incident")}
+          style={{ cursor: "pointer" }}
+        >
           <Icon name="plus" size={16} stroke={2.5} />
           Registrar Incidente
         </button>

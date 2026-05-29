@@ -22,5 +22,28 @@
             "Sofía Retamal"
         ],
         "reportado_por": "Inspectora Andrea Pinto"
+    },
+    {
+        "id_i": 3,
+        "titulo_i": "hola amigos como están",
+        "descripcion_i": "hola amigos como estan los odio los odio los odio los odio los odio los odio los odio los odio los odio los odio los odio los odio los odio",
+        "fecha_i": "2026-05-28T22:03",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Joaquín López"
+        ],
+        "reportado_por": "Encargada de Convivencia — Paula Soto"
+    },
+    {
+        "id_i": 4,
+        "titulo_i": "potito",
+        "descripcion_i": "potazo",
+        "fecha_i": "2026-05-28T22:31",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Benjamín Muñoz",
+            "Miguel Jackson"
+        ],
+        "reportado_por": "Profesora Carla Mendoza — Lenguaje"
     }
 ]

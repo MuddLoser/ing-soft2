@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Icon from "../../../shared/icons/Icon";
-import { getIncidentes } from "../../../api/incidentesApi";
+import { obtenerIncidentes } from "../../../api/incidentesApi";
 
-function ListarIncidentes() {
+function PanelControl() {
   const [incidentes, setIncidentes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getIncidentes()
+    obtenerIncidentes()
       .then((data) => {
         setIncidentes(data);
         setLoading(false);
