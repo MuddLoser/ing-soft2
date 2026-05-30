@@ -4,7 +4,9 @@ from pydantic import BaseModel
 from typing import List
 
 from modules.incidentes.incidente import IncidenteRepository, GestorCasos
+from modules.estudiantes.models import EstudianteRepository 
 
+repo_estudiantes = EstudianteRepository()
 app = FastAPI(title="API de Convivencia Escolar")
 
 app.add_middleware(
@@ -60,12 +62,25 @@ async def formalizar(id_incidente: int):
         raise HTTPException(status_code=400, detail=str(err))
 
 class SolucionPayload(BaseModel):
+    plan_accion: str
     solucion: str
 
 @app.put("/incidentes/{id_incidente}/solucion")
 async def asignar_solucion(id_incidente: int, payload: SolucionPayload):
     try:
-        incidente = gestor.asignar_solucion(id_incidente, payload.solucion)
+        incidente = gestor.asignar_solucion(
+            id_incidente=id_incidente,
+            plan_accion=payload.plan_accion,
+            solucion=payload.solucion
+        )
         return incidente.to_dict()
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
+    
+@app.get("/estudiantes")
+async def obtener_estudiantes():
+    try:
+        estudiantes = repo_estudiantes.obtener_todos()
+        return estudiantes
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="No se pudo cargar la lista de alumnos.")

@@ -22,7 +22,6 @@ function Sidebar({ vistaActual, cambiarVista }) {
             <br />
             Escolar
           </div>
-          <div className="sub">Convivencia y Disciplina</div>
         </div>
       </div>
 

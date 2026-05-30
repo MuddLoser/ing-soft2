@@ -39,12 +39,29 @@ export async function formalizarIncidente(id) {
   return response.json();
 }
 
-export async function asignarSolucion(id, solucion) {
+export async function asignarSolucion(id, planAccion, solucion) {
   const response = await fetch(`${API_URL}/incidentes/${id}/solucion`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ solucion }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ 
+      plan_accion: planAccion, 
+      solucion: solucion 
+    }),
   });
-  if (!response.ok) throw new Error("Error al asignar solución");
+  
+  if (!response.ok) {
+    throw new Error("Error al registrar las medidas de resolución.");
+  }
+  
+  return response.json();
+}
+
+export async function getEstudiantes() {
+  const response = await fetch(`${API_URL}/estudiantes`);
+  if (!response.ok) {
+    throw new Error("Error al obtener la lista de estudiantes");
+  }
   return response.json();
 }

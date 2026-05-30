@@ -5,7 +5,7 @@ from datetime import datetime
 ARCHIVO_DATOS = os.path.join(os.path.dirname(__file__), 'incidentes.json')
 
 class Incidente:
-    def __init__(self, id_i, titulo_i, descripcion_i, fecha_i, estado_i, estudiantes_asociados, reportado_por, solucion_i=""):
+    def __init__(self, id_i, titulo_i, descripcion_i, fecha_i, estado_i, estudiantes_asociados, reportado_por, solucion_i="", plan_accion_i=""):
         self.id_i = id_i
         self.titulo_i = titulo_i
         self.descripcion_i = descripcion_i
@@ -14,6 +14,7 @@ class Incidente:
         self.estudiantes_asociados = estudiantes_asociados
         self.reportado_por = reportado_por
         self.solucion_i = solucion_i
+        self.plan_accion_i = plan_accion_i
 
     def to_dict(self):
         return {
@@ -24,7 +25,8 @@ class Incidente:
             "estado_i": self.estado_i,
             "estudiantes_asociados": self.estudiantes_asociados,
             "reportado_por": self.reportado_por,
-            "solucion_i": self.solucion_i
+            "solucion_i": self.solucion_i,
+            "plan_accion_i": self.plan_accion_i
         }
 
     @classmethod
@@ -37,7 +39,8 @@ class Incidente:
             data["estado_i"],
             data.get("estudiantes_asociados", []),
             data.get("reportado_por", "Desconocido"),
-            data.get("solucion_i", "")
+            data.get("solucion_i", ""),
+            data.get("plan_accion_i", "")
         )
 
     def imprimir_informacion(self):
@@ -83,7 +86,7 @@ class GestorCasos:
             raise ValueError("Debe ingresar una descripcion.")
 
         nuevo_id = max([inc.id_i for inc in self.incidentes], default=0) + 1
-        fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
+        fecha_actual = datetime.now().strftime("%d/%m/%Y   %H:%M")
         estado_inicial = "Reportado"
 
         nuevo_incidente = Incidente(
@@ -119,7 +122,7 @@ class GestorCasos:
         self.repo.guardar_todos(self.incidentes)
         return incidente
     
-    def asignar_solucion(self, id_incidente, solucion):
+    def asignar_solucion(self, id_incidente, plan_accion, solucion):
         incidente = self.buscar_por_id(id_incidente)
         if not incidente:
             raise ValueError("Incidente no encontrado.")
@@ -127,6 +130,8 @@ class GestorCasos:
             raise ValueError("El incidente debe estar formalizado.")
         if not solucion.strip():
             raise ValueError("Debe ingresar una solución.")
+        
+        incidente.plan_accion_i = plan_accion
         incidente.solucion_i = solucion
         self.repo.guardar_todos(self.incidentes)
         return incidente
@@ -177,7 +182,6 @@ def main():
             estudiantes_input = input("Estudiantes involucrados (separados por coma): ")
             estudiantes = [e.strip() for e in estudiantes_input.split(',') if e.strip()]
             
-            # La UI le entrega los datos crudos al Gestor para que haga el trabajo
             nuevo_inc = gestor.reportar_incidente(titulo, descripcion, estudiantes, nombre_docente)
             print("\nIncidente guardado con éxito.")
             nuevo_inc.imprimir_informacion()
