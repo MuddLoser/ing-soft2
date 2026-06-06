@@ -1,69 +1,30 @@
 [
     {
         "id_i": 1,
-        "titulo_i": "Benjamin golpea a Martina",
-        "descripcion_i": "Durante la tarde del Martes el alumno Benjamin Muñoz, en pleno patio golpeó a su compañera Martina en la cara con un palo.",
-        "fecha_i": "2026-05-28 T23:27",
+        "titulo_i": "Violenta pelea",
+        "descripcion_i": "Durante la tarde del Miercoles el alumno Benjamín Muñoz y la alumna Camila Soto se vieron envueltos en una brutal golpiza en el comedor.",
+        "fecha_i": "2026-06-01T10:52",
         "estado_i": "Formalizado",
         "estudiantes_asociados": [
             "Benjamín Muñoz",
-            "Martina Perez"
+            "Camila Soto"
         ],
-        "reportado_por": "Inspectora Andrea Pinto",
-        "solucion_i": "Se golpeara a los alumnos",
-        "plan_accion_i": "1. Se tomará a los alumnos\n2. Se los encerrará en una sala\n3. Se les dara un regalo\n4. se les saludará"
+        "reportado_por": "Inspector general Luis Cárcamo",
+        "solucion_i": "",
+        "plan_accion_i": ""
     },
     {
         "id_i": 2,
-        "titulo_i": "Violenta pelea",
-        "descripcion_i": "Durante el recreo de las 11:15, la alumna Sofía Henriquez tacleó de forma brutal a su compañero Miguel Jackson, rompiendole la nariz.",
-        "fecha_i": "2026-05-29 T02:34",
+        "titulo_i": "Alumnos corren en clases",
+        "descripcion_i": "Los alumnos Miguel Jackson y Florencia Casas son sorprendidos corriendo en la sala de clases.",
+        "fecha_i": "2026-04-10T10:20",
         "estado_i": "Formalizado",
         "estudiantes_asociados": [
-            "Sofía Henriquez",
-            "Miguel Jackson"
-        ],
-        "reportado_por": "Profesor Rodrigo Salazar — Matemáticas",
-        "solucion_i": "Los alumnos se darán la mano",
-        "plan_accion_i": ""
-    },
-    {
-        "id_i": 3,
-        "titulo_i": "Incidente en el baño",
-        "descripcion_i": "En la mañana del Viernes, el alumno Joaquín López fue sorprendido orinando en las paredes del baño en vez de los urinarios. Al ser cuestionado, responde que simplemente \"estaba aburrido\"",
-        "fecha_i": "2026-05-29 T03:04",
-        "estado_i": "Reportado",
-        "estudiantes_asociados": [
-            "Joaquín López"
-        ],
-        "reportado_por": "Profesora Carla Mendoza — Lenguaje",
-        "solucion_i": "",
-        "plan_accion_i": ""
-    },
-    {
-        "id_i": 4,
-        "titulo_i": "Alumno interrumpe clases",
-        "descripcion_i": "El estudiante salta y corre en clases, distrayendo a sus compañeros y molestando al docente.",
-        "fecha_i": "2026-05-29 T12:50",
-        "estado_i": "Formalizado",
-        "estudiantes_asociados": [
-            "Mario Mario"
+            "Miguel Jackson",
+            "Florencia Casas"
         ],
         "reportado_por": "Inspector general Luis Cárcamo",
-        "solucion_i": "Wahoo",
-        "plan_accion_i": "hola hola hoalaaaaaaaaaaaaaaa\n"
-    },
-    {
-        "id_i": 5,
-        "titulo_i": "Incidente 1",
-        "descripcion_i": "El incidente ocurrio y paso algo",
-        "fecha_i": "2026-05-29T15:52",
-        "estado_i": "Formalizado",
-        "estudiantes_asociados": [
-            "Miguel Jackson"
-        ],
-        "reportado_por": "Profesora Carla Mendoza — Lenguaje",
-        "solucion_i": "",
-        "plan_accion_i": ""
+        "solucion_i": "Se les deja ir con advertencia.",
+        "plan_accion_i": "Se llama a los alumnos a inspectoría y se les dice por que lo que hicieron esta mal."
     }
 ]

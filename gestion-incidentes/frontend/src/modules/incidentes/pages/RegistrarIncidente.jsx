@@ -440,7 +440,7 @@ function RegistrarIncidente(props) {
             </div>
           </div>
         </section>
-
+{/*
         <section className="section">
           <h3 className="section-title">
             <span className="ico"><Icon name="paper" size={16} /></span>
@@ -464,16 +464,15 @@ function RegistrarIncidente(props) {
             </div>
           )}
         </section>
-
+*/}
         <div className="form-actions">
           <div className="draft-status">
-            <span className="dot"></span>
-            Borrador guardado automáticamente · simulación
+            
           </div>
 
           <div className="actions-right">
-            <button type="button" className="btn-ghost">Cancelar</button>
-            <button type="button" className="btn-ghost">Guardar borrador</button>
+            {/* <button type="button" className="btn-ghost">Cancelar</button>
+            <button type="button" className="btn-ghost">Guardar borrador</button>*/}
             <button
               type="button"
               className="btn-solid"
