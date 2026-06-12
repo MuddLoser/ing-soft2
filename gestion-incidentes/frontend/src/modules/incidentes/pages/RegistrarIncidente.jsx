@@ -1,15 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect} from "react";
 import Icon from "../../../shared/icons/Icon";
-import { registrarIncidente } from "../../../api/incidentesApi";
-
-const TODOS_LOS_ESTUDIANTES = [
-  { id: 1, name: "Martina Perez", grade: "2°A", initials: "MV" },
-  { id: 2, name: "Joaquín López", grade: "2°A", initials: "JL" },
-  { id: 3, name: "Benjamín Muñoz", grade: "3°B", initials: "BM" },
-  { id: 4, name: "Sofía Henriquez", grade: "1°C", initials: "SH" },
-  { id: 5, name: "Mateo Sanhueza", grade: "4°A", initials: "MS" },
-  { id: 6, name: "Miguel Jackson", grade: "2°B", initials: "MJ" },
-];
+import { registrarIncidente , getEstudiantes} from "../../../api/incidentesApi";
 
 const categories = [
   "Agresión verbal",
@@ -24,6 +15,15 @@ const categories = [
 ];
 
 function RegistrarIncidente(props) {
+
+  const [listaAlumnos, setListaAlumnos] = useState([]);
+
+  useEffect(() => {
+    getEstudiantes()
+      .then((data) => setListaAlumnos(data))
+      .catch(console.error);
+  }, []);
+
   const fechaActual = new Date();
   fechaActual.setMinutes(fechaActual.getMinutes() - fechaActual.getTimezoneOffset());
   const fechaActualFormato = fechaActual.toISOString().slice(0, 16);
@@ -44,7 +44,7 @@ function RegistrarIncidente(props) {
 
   const estudiantesFiltrados = searchTerm.trim() === "" 
     ? [] 
-    : TODOS_LOS_ESTUDIANTES.filter(estudiante => 
+    : listaAlumnos.filter(estudiante => 
         estudiante.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         !students.some(agregado => agregado.id === estudiante.id)
       );
@@ -244,7 +244,6 @@ function RegistrarIncidente(props) {
                 <option>Baños</option>
                 <option>Fuera del establecimiento</option>
               </select>
-              <span className="hint">Campo visual preparado para próximas iteraciones.</span>
             </div>
           </div>
 
@@ -441,7 +440,7 @@ function RegistrarIncidente(props) {
             </div>
           </div>
         </section>
-
+{/*
         <section className="section">
           <h3 className="section-title">
             <span className="ico"><Icon name="paper" size={16} /></span>
@@ -465,16 +464,15 @@ function RegistrarIncidente(props) {
             </div>
           )}
         </section>
-
+*/}
         <div className="form-actions">
           <div className="draft-status">
-            <span className="dot"></span>
-            Borrador guardado automáticamente · simulación
+            
           </div>
 
           <div className="actions-right">
-            <button type="button" className="btn-ghost">Cancelar</button>
-            <button type="button" className="btn-ghost">Guardar borrador</button>
+            {/* <button type="button" className="btn-ghost">Cancelar</button>
+            <button type="button" className="btn-ghost">Guardar borrador</button>*/}
             <button
               type="button"
               className="btn-solid"

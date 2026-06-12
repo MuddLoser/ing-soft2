@@ -30,3 +30,38 @@ export async function obtenerIncidentes() {
 
   return response.json();
 }
+
+export async function formalizarIncidente(id) {
+  const response = await fetch(`${API_URL}/incidentes/${id}/formalizar`, {
+    method: "PUT",
+  });
+  if (!response.ok) throw new Error("Error al formalizar");
+  return response.json();
+}
+
+export async function asignarSolucion(id, planAccion, solucion) {
+  const response = await fetch(`${API_URL}/incidentes/${id}/solucion`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ 
+      plan_accion: planAccion, 
+      solucion: solucion 
+    }),
+  });
+  
+  if (!response.ok) {
+    throw new Error("Error al registrar las medidas de resolución.");
+  }
+  
+  return response.json();
+}
+
+export async function getEstudiantes() {
+  const response = await fetch(`${API_URL}/estudiantes`);
+  if (!response.ok) {
+    throw new Error("Error al obtener la lista de estudiantes");
+  }
+  return response.json();
+}
