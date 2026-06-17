@@ -171,15 +171,15 @@ class GestorCasos:
         return historial
 
     def filtrar_por_estudiante(self, nombre):
-    nombre = nombre.lower()
+        nombre = nombre.lower()
 
-    return [
-        inc for inc in self.obtener_historial()
-        if any(
-            nombre in estudiante.lower()
-            for estudiante in inc.estudiantes_asociados
-        )
-    ]
+        return [
+            inc for inc in self.obtener_historial()
+            if any(
+                nombre in estudiante.lower()
+                for estudiante in inc.estudiantes_asociados
+            )
+        ]
 
     def filtrar_por_fecha(self, fecha):
         return [
