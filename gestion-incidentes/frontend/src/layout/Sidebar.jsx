@@ -5,8 +5,6 @@ function Sidebar({ vistaActual, cambiarVista }) {
     { id: "dash", label: "Panel de Control", icon: "grid" },
     { id: "incident", label: "Registro de Incidentes", icon: "triangle" },
     { id: "dir", label: "Directorio Estudiantil", icon: "users" },
-    //{ id: "rep", label: "Reportes Académicos", icon: "chart" },
-    //{ id: "cfg", label: "Configuración", icon: "gear" },
   ];
 
   return (
