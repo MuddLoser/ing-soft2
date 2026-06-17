@@ -157,6 +157,36 @@ class GestorCasos:
         self.repo.guardar_todos(self.incidentes)
         return incidente
 
+    def obtener_historial(self):
+        historial = self.incidentes.copy()
+
+        historial.sort(
+            key=lambda inc: datetime.strptime(
+                inc.fecha_i,
+                "%d/%m/%Y   %H:%M"
+            ),
+            reverse=True
+        )
+
+        return historial
+
+    def filtrar_por_estudiante(self, nombre):
+    nombre = nombre.lower()
+
+    return [
+        inc for inc in self.obtener_historial()
+        if any(
+            nombre in estudiante.lower()
+            for estudiante in inc.estudiantes_asociados
+        )
+    ]
+
+    def filtrar_por_fecha(self, fecha):
+        return [
+            inc for inc in self.obtener_historial()
+            if fecha in inc.fecha_i
+        ]
+
 
 def main():
     repositorio = IncidenteRepository()
@@ -169,9 +199,10 @@ def main():
         print("2. Abrir un incidente existente")
         print("3. Formalizar incidente")
         print("4. Asignar solución")
-        print("5. Salir")
+        print("5. Editar incidente")
+        print("6. Ver historial")
 
-        opcion = input("Seleccione una opción (1-5): ").strip()
+        opcion = input("Seleccione una opción (1-6): ").strip()
         
         if opcion == '1':
             print("\n-- REPORTAR NUEVO INCIDENTE --")
@@ -279,6 +310,41 @@ def main():
 
             except ValueError as e:
                 print(f"\nError: {e}")
+        elif opcion == '6':
+            print("\n-- VER HISTORIAL --")
+
+            historial = gestor.obtener_historial()
+
+            if not historial:
+                print("No existen incidentes previamente formalizados.")
+                continue
+
+            print("1. Ver todo el historial")
+            print("2. Filtrar por fecha")
+            print("3. Filtrar por estudiante")
+
+            filtro = input("Seleccione una opción: ").strip()
+
+            if filtro == "1":
+                resultados = historial
+
+            elif filtro == "2":
+                fecha = input("Ingrese la fecha (dd/mm/aaaa): ").strip()
+                resultados = gestor.filtrar_por_fecha(fecha)
+
+            elif filtro == "3":
+                estudiante = input("Ingrese el nombre del estudiante: ").strip()
+                resultados = gestor.filtrar_por_estudiante(estudiante)
+
+            else:
+                print("Opción inválida.")
+                continue
+
+            if not resultados:
+                print("No se encontraron incidentes con los criterios entregados.")
+            else:
+                for incidente in resultados:
+                    incidente.imprimir_informacion()
 
 if __name__ == "__main__":
     main()
