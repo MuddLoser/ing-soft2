@@ -6,8 +6,6 @@ function Topbar() {
       <h1>Portal de Convivencia</h1>
 
       <div className="search">
-        <Icon name="search" size={16} />
-        <input type="search" placeholder="Buscar estudiantes o folios..." />
       </div>
 
       <div className="topbar-right">

@@ -160,11 +160,20 @@ class GestorCasos:
     def obtener_historial(self):
         historial = self.incidentes.copy()
 
+        def parsear_fecha(fecha_str):
+            try:
+                return datetime.strptime(fecha_str, "%d/%m/%Y   %H:%M")
+            except ValueError:
+                try:
+                    return datetime.strptime(fecha_str, "%Y-%m-%dT%H:%M")
+                except ValueError:
+                    try:
+                        return datetime.fromisoformat(fecha_str)
+                    except:
+                        return datetime.min
+
         historial.sort(
-            key=lambda inc: datetime.strptime(
-                inc.fecha_i,
-                "%d/%m/%Y   %H:%M"
-            ),
+            key=lambda inc: parsear_fecha(inc.fecha_i),
             reverse=True
         )
 

@@ -77,6 +77,19 @@ async def asignar_solucion(id_incidente: int, payload: SolucionPayload):
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
     
+@app.get("/incidentes/buscar")
+async def buscar_incidentes(termino: str = None):
+    try:
+        if not termino or not termino.strip():
+            resultados = gestor.obtener_historial()
+        else:
+            resultados = gestor.filtrar_por_estudiante(termino)
+            
+        return [inc.to_dict() for inc in resultados]
+    except Exception as e:
+        print(f"Error en la búsqueda de la base de datos: {e}")
+        raise HTTPException(status_code=500, detail="Error interno al procesar el filtro.")
+    
 @app.get("/estudiantes")
 async def obtener_estudiantes():
     try:

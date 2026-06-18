@@ -1,19 +1,27 @@
 import { useEffect, useState } from "react";
 import Icon from "../../../shared/icons/Icon";
-import { obtenerIncidentes, formalizarIncidente, asignarSolucion } from "../../../api/incidentesApi";
+import { formalizarIncidente, asignarSolucion, buscarIncidentesEnBackend } from "../../../api/incidentesApi";
 
 function PanelControl() {
   const [incidentes, setIncidentes] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
+
   const [incidenteDetalle, setIncidenteDetalle] = useState(null);
-  
   const [modoEdicion, setModoEdicion] = useState(false);
   const [editPlan, setEditPlan] = useState("");
   const [editSolucion, setEditSolucion] = useState("");
 
   const cargarDatos = () => {
-    obtenerIncidentes()
+    buscarIncidentesEnBackend(terminoBusqueda)
+      .then((data) => setIncidentes(data))
+      .catch(console.error);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    buscarIncidentesEnBackend(terminoBusqueda)
       .then((data) => {
         setIncidentes(data);
         setLoading(false);
@@ -22,11 +30,7 @@ function PanelControl() {
         console.error(err);
         setLoading(false);
       });
-  };
-
-  useEffect(() => {
-    cargarDatos();
-  }, []);
+  }, [terminoBusqueda]);
 
   const handleFormalizar = async (id, e) => {
     e.stopPropagation();
@@ -54,10 +58,9 @@ function PanelControl() {
 
     try {
       const respuestaPython = await asignarSolucion(incidenteDetalle.id_i, editPlan, editSolucion);
-     
       setIncidenteDetalle(respuestaPython);
       setModoEdicion(false);
-      cargarDatos(); 
+      cargarDatos();
     } catch (error) {
       console.error(error);
       alert("Error al actualizar las medidas de resolución.");
@@ -71,16 +74,50 @@ function PanelControl() {
       </div>
 
       <div className="card">
-        <div className="card-header">
-          <h2>Incidentes Recientes</h2>
-          <p>Haga clic en cualquier caso para abrir la ficha de seguimiento y planes de acción.</p>
+        <div className="card-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <h2>Incidentes Recientes</h2>
+            <p>Haga clic en cualquier caso para abrir la ficha de seguimiento y planes de acción.</p>
+          </div>
+          
+          <div style={{ position: "relative", width: "300px", maxWidth: "100%" }}>
+            <span style={{ position: "absolute", left: "12px", top: "10px", color: "var(--ink-400)", display: "flex", alignItems: "center" }}>
+              <Icon name="search" size={16} />
+            </span>
+            <input 
+              type="text"
+              placeholder="Buscar estudiante..."
+              value={terminoBusqueda}
+              onChange={(e) => setTerminoBusqueda(e.target.value)}
+              style={{ 
+                width: "100%", 
+                padding: "8px 12px 8px 36px", 
+                borderRadius: "6px", 
+                border: "1px solid var(--line-2)", 
+                fontSize: "14px",
+                outline: "none",
+                background: "var(--bg-2)"
+              }}
+            />
+            {terminoBusqueda && (
+              <button 
+                onClick={() => setTerminoBusqueda("")}
+                style={{ position: "absolute", right: "12px", top: "8px", background: "transparent", border: "none", fontSize: "16px", cursor: "pointer", color: "var(--ink-400)" }}
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
 
         <div style={{ padding: "24px" }}>
           {loading ? (
-            <p>Cargando incidentes desde Python...</p>
-          ) : !Array.isArray(incidentes) || incidentes.length === 0 ? (
-            <p style={{ color: "var(--ink-500)" }}>No hay incidentes registrados aún.</p>
+            <p>Consultando a la base de datos...</p>
+          ) : incidentes.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "32px", color: "var(--ink-500)", border: "1px dashed var(--line)", borderRadius: "8px" }}>
+              <Icon name="search" size={24} style={{ marginBottom: "8px", color: "var(--ink-300)" }} />
+              <p style={{ margin: 0 }}>No se encontraron incidentes que coincidan con la búsqueda en el backend.</p>
+            </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               
@@ -88,7 +125,7 @@ function PanelControl() {
                 <div 
                   key={inc.id_i} 
                   onClick={() => abrirDetalles(inc)} 
-                  style={{ padding: "16px", border: "1px solid var(--line)", borderRadius: "8px", background: "#fff", cursor: "pointer", transition: "transform 0.2s" }}
+                  style={{ padding: "16px", border: "1px solid var(--line)", borderRadius: "8px", background: "#fff", cursor: "pointer", transition: "border-color 0.2s" }}
                   onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--teal-600)"}
                   onMouseLeave={(e) => e.currentTarget.style.borderColor = "var(--line)"}
                 >
@@ -135,7 +172,6 @@ function PanelControl() {
         </div>
       </div>
 
-      
       {incidenteDetalle && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10000 }}>
           <div style={{ background: "#fff", padding: "28px", borderRadius: "12px", width: "650px", maxWidth: "92%", maxHeight: "88vh", overflowY: "auto", boxShadow: "0 20px 40px rgba(0,0,0,0.25)" }}>
@@ -147,13 +183,7 @@ function PanelControl() {
                 </span>
                 <h3 style={{ marginTop: "6px", marginBottom: 0, fontSize: "20px", color: "var(--ink-900)" }}>{incidenteDetalle.titulo_i}</h3>
               </div>
-              <button 
-                type="button" 
-                onClick={() => setIncidenteDetalle(null)} 
-                style={{ background: "transparent", border: "none", fontSize: "22px", cursor: "pointer", color: "var(--ink-400)" }}
-              >
-                ×
-              </button>
+              <button type="button" onClick={() => setIncidenteDetalle(null)} style={{ background: "transparent", border: "none", fontSize: "22px", cursor: "pointer", color: "var(--ink-400)" }}>×</button>
             </div>
 
             <div style={{ display: "flex", gap: "20px", fontSize: "13px", color: "var(--ink-600)", background: "var(--bg)", padding: "10px 14px", borderRadius: "6px", marginBottom: "20px" }}>
@@ -182,13 +212,12 @@ function PanelControl() {
 
             {incidenteDetalle.estado_i !== "Formalizado" ? (
               <div style={{ background: "#fef8f5", border: "1px solid #f3d9cb", padding: "16px", borderRadius: "8px", textAlign: "center", color: "#8a2a14", fontSize: "14px" }}>
-                <Icon name="triangle" size={18} /> El caso debe ser <strong>Formalizado</strong> externamente antes de poder diseñar el plan de acción y las soluciones definitivas.
+                El caso debe ser <strong>Formalizado</strong> antes de poder diseñar el plan de acción y las soluciones definitivas.
               </div>
             ) : (
               <div style={{ borderTop: "1px dashed var(--line)", paddingTop: "16px" }}>
                 
                 {!modoEdicion ? (
-
                   <div>
                     <div style={{ marginBottom: "16px" }}>
                       <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--ink-900)" }}>Plan de Acción Interno</h4>
@@ -200,7 +229,7 @@ function PanelControl() {
                     <div style={{ marginBottom: "20px" }}>
                       <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", color: "var(--ink-900)" }}>Solución y Medida Definitiva</h4>
                       <p style={{ margin: 0, fontSize: "14px", color: incidenteDetalle.solucion_i ? "var(--ink-800)" : "var(--ink-400)", fontStyle: incidenteDetalle.solucion_i ? "normal" : "italic" }}>
-                        {incidenteDetalle.solucion_i || "No se ha registrado la sanción o solución definitiva adoptada."}
+                        {incidenteDetalle.solucion_i || "No se ha registrado la resolución definitiva adoptada."}
                       </p>
                     </div>
 
@@ -210,13 +239,11 @@ function PanelControl() {
                         onClick={() => setModoEdicion(true)}
                         style={{ padding: "8px 16px", background: "var(--teal-700)", color: "#fff", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "600", display: "flex", alignItems: "center", gap: "4px" }}
                       >
-                        <Icon name="gear" size={14} /> 
                         {incidenteDetalle.plan_accion_i ? "Editar Plan y Solución" : "Asignar Plan y Solución"}
                       </button>
                     </div>
                   </div>
                 ) : (
-
                   <div style={{ background: "var(--bg)", padding: "16px", borderRadius: "8px", border: "1px solid var(--line)" }}>
                     <h4 style={{ marginTop: 0, marginBottom: "12px", color: "var(--teal-800)", fontSize: "15px" }}>Actualizar Seguimiento del Caso</h4>
                     
@@ -226,7 +253,7 @@ function PanelControl() {
                         style={{ width: "100%", height: "70px", padding: "8px", borderRadius: "4px", border: "1px solid var(--line)", resize: "none", fontFamily: "inherit" }}
                         value={editPlan}
                         onChange={(e) => setEditPlan(e.target.value)}
-                        placeholder="Ej: Entrevistar a los testigos, citar a los tutores legales y derivar a psicología escolar..."
+                        placeholder="Pasos de seguimiento..."
                       />
                     </div>
 
@@ -236,17 +263,13 @@ function PanelControl() {
                         style={{ width: "100%", height: "70px", padding: "8px", borderRadius: "4px", border: "1px solid var(--line)", resize: "none", fontFamily: "inherit" }}
                         value={editSolucion}
                         onChange={(e) => setEditSolucion(e.target.value)}
-                        placeholder="Ej: Firma de compromiso de sana convivencia y amonestación en el libro de clases conforme al reglamento interno..."
+                        placeholder="Resolución final..."
                       />
                     </div>
 
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-                      <button type="button" onClick={() => setModoEdicion(false)} style={{ padding: "6px 12px", background: "transparent", border: "none", cursor: "pointer", color: "var(--ink-600)" }}>
-                        Cancelar
-                      </button>
-                      <button type="button" onClick={handleGuardarPlanSolucion} style={{ padding: "6px 14px", background: "var(--teal-700)", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "600" }}>
-                        Guardar Cambios
-                      </button>
+                      <button type="button" onClick={() => setModoEdicion(false)} style={{ padding: "6px 12px", background: "transparent", border: "none", cursor: "pointer", color: "var(--ink-600)" }}>Cancelar</button>
+                      <button type="button" onClick={handleGuardarPlanSolucion} style={{ padding: "6px 14px", background: "var(--teal-700)", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontWeight: "600" }}>Guardar Cambios</button>
                     </div>
                   </div>
                 )}

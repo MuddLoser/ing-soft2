@@ -65,3 +65,15 @@ export async function getEstudiantes() {
   }
   return response.json();
 }
+
+export async function buscarIncidentesEnBackend(termino) {
+  const url = termino 
+    ? `${API_URL}/incidentes/buscar?termino=${encodeURIComponent(termino)}`
+    : `${API_URL}/incidentes/buscar`;
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("Error al obtener los datos filtrados del servidor.");
+  }
+  return response.json();
+}
