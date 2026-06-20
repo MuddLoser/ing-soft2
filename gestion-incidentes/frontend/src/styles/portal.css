@@ -481,6 +481,7 @@
     display: grid; place-items: center;
   }
 
+<<<<<<< HEAD
   .focus-person {
     display: flex; align-items: center; gap: 14px;
     border: 1px solid #cfe4df; background: var(--teal-50);
@@ -585,6 +586,9 @@
 
   .layout { display: grid; gap: 22px; }
 
+=======
+  
+>>>>>>> main
 .datetime-control {
   position: relative;
   width: 100%;
@@ -613,6 +617,7 @@
 
 input[type="datetime-local"] {
   cursor: text;
+<<<<<<< HEAD
 }
 
 /* ---------- Ajustes para vista Crear Reincidencia ---------- */
@@ -987,4 +992,6 @@ input[type="datetime-local"] {
   .reincidencia-card .pick-toolbar select {
     width: 100%;
   }
+=======
+>>>>>>> main
 }

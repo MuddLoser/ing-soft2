@@ -1,0 +1,18 @@
+[
+  { "id": 1, "name": "Martina Vargas", "grade": "2°A", "initials": "MV", "rut": "21.345.678-9" },
+  { "id": 2, "name": "Joaquín López", "grade": "2°A", "initials": "JL", "rut": "21.112.233-4" },
+  { "id": 3, "name": "Benjamín Muñoz", "grade": "3°B", "initials": "BM", "rut": "20.987.654-3" },
+  { "id": 4, "name": "Sofía Retamal", "grade": "1°M", "initials": "SR", "rut": "22.456.789-0" },
+  { "id": 5, "name": "Mateo Sanhueza", "grade": "4°A", "initials": "MS", "rut": "19.876.543-2" },
+  { "id": 6, "name": "Florencia Casas", "grade": "2°B", "initials": "FC", "rut": "21.555.636-7" },
+  { "id": 7, "name": "Agustín Rojas", "grade": "3°A", "initials": "AR", "rut": "20.123.456-8" },
+  { "id": 8, "name": "Isidora Fuentes", "grade": "1°B", "initials": "IF", "rut": "22.654.321-0" },
+  { "id": 9, "name": "Tomás Herrera", "grade": "4°B", "initials": "TH", "rut": "19.543.210-1" },
+  { "id": 10, "name": "Valentina Paredes", "grade": "2°C", "initials": "VP", "rut": "21.777.888-9" },
+  { "id": 11, "name": "Miguel Jackson", "grade": "2°B", "initials": "MJ", "rut": "21.555.666-7" },
+  { "id": 12, "name": "Camila Soto", "grade": "3°C", "initials": "CS", "rut": "20.222.333-4" },
+  { "id": 13, "name": "Diego Martínez", "grade": "1°C", "initials": "DM", "rut": "22.333.444-5" },
+  { "id": 14, "name": "Antonia Rivas", "grade": "4°C", "initials": "AR", "rut": "19.654.321-0" },
+  { "id": 15, "name": "Lucas Fernández", "grade": "2°A", "initials": "LF", "rut": "21.888.999-0" },
+  { "id": 16, "name": "Mario Mario", "grade": "IV°A", "initials":"MM", "rut": "19.000.000-0" }
+]

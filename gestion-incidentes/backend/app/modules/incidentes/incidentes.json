@@ -1,0 +1,30 @@
+[
+    {
+        "id_i": 1,
+        "titulo_i": "Violenta pelea",
+        "descripcion_i": "Durante la tarde del Miercoles el alumno Benjamín Muñoz y la alumna Camila Soto se vieron envueltos en una brutal golpiza en el comedor.",
+        "fecha_i": "2026-06-01T10:52",
+        "estado_i": "Formalizado",
+        "estudiantes_asociados": [
+            "Benjamín Muñoz",
+            "Camila Soto"
+        ],
+        "reportado_por": "Inspector general Luis Cárcamo",
+        "solucion_i": "",
+        "plan_accion_i": ""
+    },
+    {
+        "id_i": 2,
+        "titulo_i": "Alumnos corren en clases",
+        "descripcion_i": "Los alumnos Miguel Jackson y Florencia Casas son sorprendidos corriendo en la sala de clases.",
+        "fecha_i": "2026-04-10T10:20",
+        "estado_i": "Formalizado",
+        "estudiantes_asociados": [
+            "Miguel Jackson",
+            "Florencia Casas"
+        ],
+        "reportado_por": "Inspector general Luis Cárcamo",
+        "solucion_i": "Se les deja ir con advertencia.",
+        "plan_accion_i": "Se llama a los alumnos a inspectoría y se les dice por que lo que hicieron esta mal."
+    }
+]
