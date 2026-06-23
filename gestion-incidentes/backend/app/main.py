@@ -9,7 +9,7 @@ from modules.incidentes.incidente import IncidenteRepository, GestorCasos
 app = FastAPI(title="API de Convivencia Escolar")
 
 # Importación de lógica nativa en reincidencias.py
-from modules.reincidencias.reincidencia import (
+from modules.reincidencias import (
     ReincidenciaRepository,
     GestorReincidencias
 )
