@@ -65,3 +65,40 @@ export async function getEstudiantes() {
   }
   return response.json();
 }
+
+export async function buscarIncidentesEnBackend(termino,fecha) {
+  const params = new URLSearchParams();
+  
+  if (termino) params.append("termino", termino);
+  if (fecha) params.append("fecha", fecha); 
+
+  const url = `${API_URL}/incidentes/buscar?${params.toString()}`;  
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Error al obtener los datos filtrados");
+  }
+  return response.json();
+}
+
+export async function editarIncidenteCompleto(id, datosEditados) {
+  const response = await fetch(`${API_URL}/incidentes/${id}/editar`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      titulo: datosEditados.titulo,
+      descripcion: datosEditados.descripcion,
+      estudiantes: datosEditados.estudiantes,
+      solucion: datosEditados.solucion,
+      plan_accion: datosEditados.plan_accion 
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al actualizar los datos del incidente.");
+  }
+
+  return response.json();
+}
