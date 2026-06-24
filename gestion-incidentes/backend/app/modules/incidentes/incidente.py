@@ -166,45 +166,6 @@ class GestorCasos:
         self.repo.guardar_todos(self.incidentes)
         return incidente
 
-    def obtener_historial(self):
-        historial = self.incidentes.copy()
-
-        def parsear_fecha(fecha_str):
-            try:
-                return datetime.strptime(fecha_str, "%d/%m/%Y   %H:%M")
-            except ValueError:
-                try:
-                    return datetime.strptime(fecha_str, "%Y-%m-%dT%H:%M")
-                except ValueError:
-                    try:
-                        return datetime.fromisoformat(fecha_str)
-                    except:
-                        return datetime.min
-
-        historial.sort(
-            key=lambda inc: parsear_fecha(inc.fecha_i),
-            reverse=True
-        )
-
-        return historial
-
-    def filtrar_por_estudiante(self, nombre):
-        nombre = nombre.lower()
-
-        return [
-            inc for inc in self.obtener_historial()
-            if any(
-                nombre in estudiante.lower()
-                for estudiante in inc.estudiantes_asociados
-            )
-        ]
-
-    def filtrar_por_fecha(self, fecha):
-        return [
-            inc for inc in self.obtener_historial()
-            if fecha in inc.fecha_i
-        ]
-
 
 def main():
     repositorio = IncidenteRepository()
