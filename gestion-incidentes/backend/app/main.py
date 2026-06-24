@@ -5,6 +5,7 @@ from typing import List
 
 from modules.incidentes.incidente import IncidenteRepository, GestorCasos
 from modules.estudiantes.models import EstudianteRepository 
+from modules.reincidencias import ReincidenciaRepository, GestorReincidencias
 
 repo_estudiantes = EstudianteRepository()
 app = FastAPI(title="API de Convivencia Escolar")
@@ -19,6 +20,8 @@ app.add_middleware(
 
 repositorio = IncidenteRepository()
 gestor = GestorCasos(repositorio)
+repo_reincidencias = ReincidenciaRepository()
+gestor_reincidencias = GestorReincidencias(repo_reincidencias)
 
 class IncidentePayload(BaseModel):
     titulo: str
@@ -29,6 +32,15 @@ class IncidentePayload(BaseModel):
     gravedad: str
     lugar: str
     categorias: List[str]
+
+class ReincidenciaPayload(BaseModel):
+    persona_foco: str
+    personas_involucradas: List[str]
+    incidentes_asociados: List[int]
+    encargado_seguimiento: str
+    fecha_revision: str
+    objetivos: List[str]
+    analisis: str
 
 @app.post("/incidentes")
 async def crear_incidente(payload: IncidentePayload):
@@ -134,3 +146,23 @@ async def editar_incidente_completo(id_incidente: int, payload: EdicionIncidente
     except Exception as e:
         print(f"Error al editar: {e}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
+    
+@app.post("/reincidencias")
+async def crear_reincidencia(payload: ReincidenciaPayload):
+    try:
+        nueva = gestor_reincidencias.crear_reincidencia(
+            persona_foco=payload.persona_foco,
+            personas_involucradas=payload.personas_involucradas,
+            incidentes=payload.incidentes_asociados,
+            encargado=payload.encargado_seguimiento,
+            fecha_revision=payload.fecha_revision,
+            objetivos=payload.objetivos,
+            analisis=payload.analisis
+        )
+        return nueva.to_dict()
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
+
+@app.get("/reincidencias")
+async def obtener_reincidencias():
+    return [reincidencia.to_dict() for reincidencia in gestor_reincidencias.obtener_todas()]
