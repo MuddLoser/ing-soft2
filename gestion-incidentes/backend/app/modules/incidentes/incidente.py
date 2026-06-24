@@ -121,6 +121,25 @@ class GestorCasos:
     def obtener_todos(self):
         return self.incidentes
     
+    def obtener_historial(self):
+        """Devuelve la lista completa de incidentes para el panel."""
+        return self.incidentes
+
+    def filtrar_por_estudiante(self, termino):
+        """Busca coincidencias parciales en los nombres de los estudiantes."""
+        termino_limpio = termino.lower().strip()
+        resultados = []
+        
+        for inc in self.incidentes:
+            # Revisamos si el término de búsqueda está en alguno de los estudiantes de este incidente
+            if inc.estudiantes_asociados:
+                for estudiante in inc.estudiantes_asociados:
+                    if termino_limpio in estudiante.lower():
+                        resultados.append(inc)
+                        break # Si encuentra coincidencia, agrega el incidente y pasa al siguiente
+                        
+        return resultados
+    
     def formalizar_incidente(self, id_incidente):
         incidente = self.buscar_por_id(id_incidente)
         if not incidente:
