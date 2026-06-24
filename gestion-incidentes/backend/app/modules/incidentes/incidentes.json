@@ -10,8 +10,8 @@
             "Camila Soto"
         ],
         "reportado_por": "Inspector general Luis Cárcamo",
-        "solucion_i": "",
-        "plan_accion_i": ""
+        "solucion_i": "test",
+        "plan_accion_i": "test"
     },
     {
         "id_i": 2,
@@ -26,5 +26,19 @@
         "reportado_por": "Inspector general Luis Cárcamo",
         "solucion_i": "Se les deja ir con advertencia.",
         "plan_accion_i": "Se llama a los alumnos a inspectoría y se les dice por que lo que hicieron esta mal."
+    },
+    {
+        "id_i": 3,
+        "titulo_i": "asdfhgjklñkjhgf",
+        "descripcion_i": "asdfhgjklñkjhgfasdfhgjklñkjhgf",
+        "fecha_i": "2026-06-23T20:05",
+        "estado_i": "Formalizado",
+        "estudiantes_asociados": [
+            "Miguel Jackson",
+            "Florencia Casas"
+        ],
+        "reportado_por": "Profesor Rodrigo Salazar — Matemáticas",
+        "solucion_i": "",
+        "plan_accion_i": ""
     }
 ]

@@ -77,3 +77,25 @@ export async function buscarIncidentesEnBackend(termino) {
   }
   return response.json();
 }
+
+export async function editarIncidenteCompleto(id, datosEditados) {
+  const response = await fetch(`${API_URL}/incidentes/${id}/editar`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      titulo: datosEditados.titulo,
+      descripcion: datosEditados.descripcion,
+      estudiantes: datosEditados.estudiantes,
+      solucion: datosEditados.solucion,
+      plan_accion: datosEditados.plan_accion 
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al actualizar los datos del incidente.");
+  }
+
+  return response.json();
+}

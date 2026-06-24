@@ -65,6 +65,13 @@ class SolucionPayload(BaseModel):
     plan_accion: str
     solucion: str
 
+class EdicionIncidentePayload(BaseModel):
+    titulo: str
+    descripcion: str
+    estudiantes: List[str]
+    plan_accion: str
+    solucion: str
+
 @app.put("/incidentes/{id_incidente}/solucion")
 async def asignar_solucion(id_incidente: int, payload: SolucionPayload):
     try:
@@ -97,3 +104,24 @@ async def obtener_estudiantes():
         return estudiantes
     except Exception as e:
         raise HTTPException(status_code=500, detail="No se pudo cargar la lista de alumnos.")
+    
+@app.put("/incidentes/{id_incidente}/editar")
+async def editar_incidente_completo(id_incidente: int, payload: EdicionIncidentePayload):
+    try:
+        incidente = gestor.editar_incidente(
+            id_incidente=id_incidente,
+            nuevo_titulo=payload.titulo,
+            nueva_descripcion=payload.descripcion,
+            nuevos_estudiantes=payload.estudiantes,
+            nueva_solucion=payload.solucion
+        )
+        
+        incidente.plan_accion_i = payload.plan_accion
+        gestor.repo.guardar_todos(gestor.incidentes)
+        
+        return incidente.to_dict()
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
+    except Exception as e:
+        print(f"Error al editar: {e}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
