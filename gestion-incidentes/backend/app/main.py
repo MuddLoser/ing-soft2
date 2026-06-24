@@ -26,6 +26,9 @@ class IncidentePayload(BaseModel):
     fecha: str
     estudiantes: List[str]
     nombre_docente: str
+    gravedad: str
+    lugar: str
+    categorias: List[str]
 
 @app.post("/incidentes")
 async def crear_incidente(payload: IncidentePayload):
@@ -34,7 +37,10 @@ async def crear_incidente(payload: IncidentePayload):
             titulo=payload.titulo,
             descripcion=payload.descripcion,
             estudiantes=payload.estudiantes,
-            nombre_docente=payload.nombre_docente
+            nombre_docente=payload.nombre_docente,
+            gravedad=payload.gravedad,
+            lugar=payload.lugar,
+            categorias=payload.categorias
         )
         
         nuevo_incidente.fecha_i = payload.fecha
@@ -85,12 +91,15 @@ async def asignar_solucion(id_incidente: int, payload: SolucionPayload):
         raise HTTPException(status_code=400, detail=str(err))
     
 @app.get("/incidentes/buscar")
-async def buscar_incidentes(termino: str = None):
+async def buscar_incidentes(termino: str = None, fecha: str = None): 
     try:
         if not termino or not termino.strip():
             resultados = gestor.obtener_historial()
         else:
             resultados = gestor.filtrar_por_estudiante(termino)
+
+        if fecha and fecha.strip():
+            resultados = [inc for inc in resultados if inc.fecha_i and fecha in str(inc.fecha_i)]
             
         return [inc.to_dict() for inc in resultados]
     except Exception as e:

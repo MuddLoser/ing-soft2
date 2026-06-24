@@ -31,6 +31,19 @@ function PanelControl() {
       .catch(console.error);
   };
 
+  const formatearFecha = (fechaOriginal) => {
+    if (!fechaOriginal) return "Sin fecha";
+    
+    const partes = fechaOriginal.split("T");
+    const fecha = partes[0]; 
+    const hora = partes[1] ? ` a las ${partes[1]}` : "";
+    
+    const [year, month, day] = fecha.split("-");
+    const yearCorto = year.slice(-2);
+    
+    return `${day}/${month}/${yearCorto}${hora}`;
+  };
+
   useEffect(() => {
     setLoading(true);
     buscarIncidentesEnBackend(terminoBusqueda, filtroFecha)
@@ -175,7 +188,7 @@ function PanelControl() {
                   
                   <div style={{ paddingTop: "12px", borderTop: "1px solid var(--line)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ display: "flex", gap: "16px", fontSize: "13px", color: "var(--ink-500)" }}>
-                      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Icon name="calendar" size={14} /> {inc.fecha_i}</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Icon name="calendar" size={14} /> {formatearFecha(inc.fecha_i)}</span>
                       <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Icon name="users" size={14} /> {inc.estudiantes_asociados?.join(", ")}</span>
                       <span style={{ display: "flex", alignItems: "center", gap: "4px", color: inc.estado_i === "Formalizado" ? "var(--teal-700)" : "inherit", fontWeight: inc.estado_i === "Formalizado" ? "bold" : "normal" }}>
                         <Icon name="shield" size={14} /> {inc.estado_i}
@@ -233,8 +246,10 @@ function PanelControl() {
               <button type="button" onClick={() => setIncidenteDetalle(null)} style={{ background: "transparent", border: "none", fontSize: "22px", cursor: "pointer", color: "var(--ink-400)", marginLeft: "12px" }}>×</button>
             </div>
 
-            <div style={{ display: "flex", gap: "20px", fontSize: "13px", color: "var(--ink-600)", background: "var(--bg)", padding: "10px 14px", borderRadius: "6px", marginBottom: "20px" }}>
-              <div><strong>Fecha/Hora:</strong> {incidenteDetalle.fecha_i}</div>
+            <div style={{ display: "flex", gap: "20px", fontSize: "13px", color: "var(--ink-600)", background: "var(--bg)", padding: "10px 14px", borderRadius: "6px", marginBottom: "20px", flexWrap: "wrap" }}>
+              <div><strong>Fecha/Hora:</strong> {formatearFecha(incidenteDetalle.fecha_i)}</div>
+              <div><strong>Lugar:</strong> {incidenteDetalle.lugar || "No especificado"}</div>
+              <div style={{ textTransform: "capitalize" }}><strong>Gravedad:</strong> {incidenteDetalle.gravedad || "No especificada"}</div>
               <div><strong>Reportado por:</strong> {incidenteDetalle.reportado_por || "No registrado"}</div>
               <div><strong>Estado:</strong> <span style={{ fontWeight: "bold", color: incidenteDetalle.estado_i === "Formalizado" ? "var(--teal-700)" : "inherit" }}>{incidenteDetalle.estado_i}</span></div>
             </div>
@@ -263,6 +278,21 @@ function PanelControl() {
                     {e}
                   </span>
                 ))}
+              </div>
+            </div>
+
+            <div style={{ marginBottom: "24px" }}>
+              <h4 style={{ margin: "0 0 6px 0", fontSize: "14px", color: "var(--ink-900)" }}>Categorías</h4>
+              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                {incidenteDetalle.categorias && incidenteDetalle.categorias.length > 0 ? (
+                  incidenteDetalle.categorias.map((cat, idx) => (
+                    <span key={idx} style={{ background: "#e0f2fe", border: "1px solid #bae6fd", padding: "4px 10px", borderRadius: "16px", fontSize: "13px", color: "#0369a1", fontWeight: "500" }}>
+                      # {cat}
+                    </span>
+                  ))
+                ) : (
+                  <span style={{ fontSize: "13px", color: "var(--ink-500)", fontStyle: "italic" }}>Sin categorías registradas</span>
+                )}
               </div>
             </div>
 

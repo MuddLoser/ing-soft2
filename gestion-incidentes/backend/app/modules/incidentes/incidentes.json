@@ -11,7 +11,10 @@
         ],
         "reportado_por": "Inspector general Luis Cárcamo",
         "solucion_i": "test",
-        "plan_accion_i": "test"
+        "plan_accion_i": "test",
+        "gravedad": "Moderado",
+        "lugar": "",
+        "categorias": []
     },
     {
         "id_i": 2,
@@ -25,7 +28,10 @@
         ],
         "reportado_por": "Inspector general Luis Cárcamo",
         "solucion_i": "Se les deja ir con advertencia.",
-        "plan_accion_i": "Se llama a los alumnos a inspectoría y se les dice por que lo que hicieron esta mal."
+        "plan_accion_i": "Se llama a los alumnos a inspectoría y se les dice por que lo que hicieron esta mal.",
+        "gravedad": "Moderado",
+        "lugar": "",
+        "categorias": []
     },
     {
         "id_i": 3,
@@ -39,6 +45,53 @@
         ],
         "reportado_por": "Profesor Rodrigo Salazar — Matemáticas",
         "solucion_i": "",
-        "plan_accion_i": ""
+        "plan_accion_i": "",
+        "gravedad": "Moderado",
+        "lugar": "",
+        "categorias": []
+    },
+    {
+        "id_i": 4,
+        "titulo_i": "tres tristes tigres",
+        "descripcion_i": "tres tristes tigres trigo tragaban en un trigal",
+        "fecha_i": "2026-06-24T18:44",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Miguel Jackson",
+            "Florencia Casas"
+        ],
+        "reportado_por": "Inspector general Luis Cárcamo",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "Moderado",
+        "lugar": "",
+        "categorias": []
+    },
+    {
+        "id_i": 5,
+        "titulo_i": "sopa de macaco",
+        "descripcion_i": "uma delicia",
+        "fecha_i": "2026-06-24T19:13",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Miguel Jackson",
+            "Benjamín Muñoz"
+        ],
+        "reportado_por": "Inspectora Andrea Pinto",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "leve",
+        "lugar": "Baños",
+        "categorias": [
+            "Conducta disruptiva en aula",
+            "Agresión verbal",
+            "Uso indebido de dispositivos",
+            "Conflicto entre pares",
+            "Falta de respeto",
+            "Agresión física",
+            "Daño a la propiedad",
+            "Otro",
+            "Ausentismo / Atrasos"
+        ]
     }
 ]
