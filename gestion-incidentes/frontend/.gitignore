@@ -22,3 +22,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Dependencias
+node_modules/
+.pnp
+.pnp.js
+
+# Producción y cachés
+dist/
+dist-ssr/
+.vite/
+
+# Archivos de entorno y logs
+logs
+*.log
+npm-debug.log*
+.env
+.env.local
+.DS_Store
