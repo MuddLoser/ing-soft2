@@ -80,18 +80,27 @@
         "reportado_por": "Inspectora Andrea Pinto",
         "solucion_i": "",
         "plan_accion_i": "",
-        "gravedad": "leve",
-        "lugar": "Baños",
+        "gravedad": "Moderado",
+        "lugar": "",
+        "categorias": []
+    },
+    {
+        "id_i": 6,
+        "titulo_i": "gugugaga",
+        "descripcion_i": "gugugugagagaga",
+        "fecha_i": "2024-02-15T15:54",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Camila Soto"
+        ],
+        "reportado_por": "Profesor Rodrigo Salazar — Matemáticas",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "grave",
+        "lugar": "Patio principal",
         "categorias": [
             "Conducta disruptiva en aula",
-            "Agresión verbal",
-            "Uso indebido de dispositivos",
-            "Conflicto entre pares",
-            "Falta de respeto",
-            "Agresión física",
-            "Daño a la propiedad",
-            "Otro",
-            "Ausentismo / Atrasos"
+            "Uso indebido de dispositivos"
         ]
     }
 ]
