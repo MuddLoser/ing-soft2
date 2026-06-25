@@ -3,7 +3,7 @@ import Icon from "../shared/icons/Icon";
 function Topbar() {
   return (
     <header className="topbar">
-      <h1>Portal de Convivencia</h1>
+      <h1></h1>
 
       <div className="search">
       </div>

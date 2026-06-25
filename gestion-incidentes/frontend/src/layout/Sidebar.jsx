@@ -3,6 +3,7 @@ import Icon from "../shared/icons/Icon";
 function Sidebar({ vistaActual, cambiarVista }) {
   const items = [
     { id: "dash", label: "Panel de Control", icon: "grid" },
+    { id: "reinc", label: "Reincidencias", icon: "triangle" },
     { id: "dir", label: "Directorio Estudiantil", icon: "users" },
   ];
 

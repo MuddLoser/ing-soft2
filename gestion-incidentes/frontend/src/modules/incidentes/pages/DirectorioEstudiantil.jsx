@@ -46,9 +46,6 @@ function DirectorioEstudiantil() {
 
   return (
     <div className="page">
-      <div className="breadcrumb">
-        <span className="current">Directorio Estudiantil</span>
-      </div>
 
       <div className="card">
         <div className="card-header">
