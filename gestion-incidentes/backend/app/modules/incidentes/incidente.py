@@ -5,13 +5,16 @@ from datetime import datetime
 ARCHIVO_DATOS = os.path.join(os.path.dirname(__file__), 'incidentes.json')
 
 class Incidente:
-    def __init__(self, id_i, titulo_i, descripcion_i, fecha_i, estado_i, estudiantes_asociados, reportado_por, solucion_i="", plan_accion_i=""):
+    def __init__(self, id_i, titulo_i, descripcion_i, fecha_i, estado_i, estudiantes_asociados, reportado_por, solucion_i="", plan_accion_i="", gravedad="Moderado", lugar="", categorias=None):
         self.id_i = id_i
         self.titulo_i = titulo_i
         self.descripcion_i = descripcion_i
         self.fecha_i = fecha_i
         self.estado_i = estado_i
         self.estudiantes_asociados = estudiantes_asociados
+        self.gravedad = gravedad
+        self.lugar = lugar
+        self.categorias = categorias if categorias is not None else []
         self.reportado_por = reportado_por
         self.solucion_i = solucion_i
         self.plan_accion_i = plan_accion_i
@@ -26,7 +29,10 @@ class Incidente:
             "estudiantes_asociados": self.estudiantes_asociados,
             "reportado_por": self.reportado_por,
             "solucion_i": self.solucion_i,
-            "plan_accion_i": self.plan_accion_i
+            "plan_accion_i": self.plan_accion_i,
+            "gravedad": self.gravedad,
+            "lugar": self.lugar,
+            "categorias": self.categorias
         }
 
     @classmethod
@@ -77,7 +83,7 @@ class GestorCasos:
         self.repo = repositorio
         self.incidentes = self.repo.cargar_todos()
 
-    def reportar_incidente(self, titulo, descripcion, estudiantes, nombre_docente):
+    def reportar_incidente(self, titulo, descripcion, estudiantes, nombre_docente, gravedad="Moderado", lugar="", categorias=None):
         if not nombre_docente or not nombre_docente.strip():
             raise ValueError("El nombre del adulto responsable es obligatorio.")
         if not titulo or not titulo.strip():
@@ -96,7 +102,10 @@ class GestorCasos:
             fecha_i=fecha_actual,
             estado_i=estado_inicial,
             estudiantes_asociados=estudiantes,
-            reportado_por=nombre_docente
+            reportado_por=nombre_docente,
+            gravedad=gravedad,
+            lugar=lugar,
+            categorias=categorias or []
         )
         
         self.incidentes.append(nuevo_incidente)
@@ -111,6 +120,25 @@ class GestorCasos:
 
     def obtener_todos(self):
         return self.incidentes
+    
+    def obtener_historial(self):
+        """Devuelve la lista completa de incidentes para el panel."""
+        return self.incidentes
+
+    def filtrar_por_estudiante(self, termino):
+        """Busca coincidencias parciales en los nombres de los estudiantes."""
+        termino_limpio = termino.lower().strip()
+        resultados = []
+        
+        for inc in self.incidentes:
+            # Revisamos si el término de búsqueda está en alguno de los estudiantes de este incidente
+            if inc.estudiantes_asociados:
+                for estudiante in inc.estudiantes_asociados:
+                    if termino_limpio in estudiante.lower():
+                        resultados.append(inc)
+                        break # Si encuentra coincidencia, agrega el incidente y pasa al siguiente
+                        
+        return resultados
     
     def formalizar_incidente(self, id_incidente):
         incidente = self.buscar_por_id(id_incidente)
@@ -156,36 +184,6 @@ class GestorCasos:
             incidente.solucion_i = nueva_solucion
         self.repo.guardar_todos(self.incidentes)
         return incidente
-
-    def obtener_historial(self):
-        historial = self.incidentes.copy()
-
-        historial.sort(
-            key=lambda inc: datetime.strptime(
-                inc.fecha_i,
-                "%d/%m/%Y   %H:%M"
-            ),
-            reverse=True
-        )
-
-        return historial
-
-    def filtrar_por_estudiante(self, nombre):
-        nombre = nombre.lower()
-
-        return [
-            inc for inc in self.obtener_historial()
-            if any(
-                nombre in estudiante.lower()
-                for estudiante in inc.estudiantes_asociados
-            )
-        ]
-
-    def filtrar_por_fecha(self, fecha):
-        return [
-            inc for inc in self.obtener_historial()
-            if fecha in inc.fecha_i
-        ]
 
 
 def main():

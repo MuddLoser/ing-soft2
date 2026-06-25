@@ -42,6 +42,18 @@ class IncidentePayload(BaseModel):
     fecha: str
     estudiantes: List[str]
     nombre_docente: str
+    gravedad: str
+    lugar: str
+    categorias: List[str]
+
+class ReincidenciaPayload(BaseModel):
+    persona_foco: str
+    personas_involucradas: List[str]
+    incidentes_asociados: List[int]
+    encargado_seguimiento: str
+    fecha_revision: str
+    objetivos: List[str]
+    analisis: str
 
 class ReincidenciaPayload(BaseModel):
     persona_foco: str
@@ -60,7 +72,10 @@ async def crear_incidente(payload: IncidentePayload):
             titulo=payload.titulo,
             descripcion=payload.descripcion,
             estudiantes=payload.estudiantes,
-            nombre_docente=payload.nombre_docente
+            nombre_docente=payload.nombre_docente,
+            gravedad=payload.gravedad,
+            lugar=payload.lugar,
+            categorias=payload.categorias
         )
         
         # 2. Sincronizamos la fecha que viene desde la interfaz web
@@ -100,12 +115,53 @@ async def crear_reincidencia(
 
         return nueva.to_dict()
 
+        incidente = gestor.formalizar_incidente(id_incidente)
+        return incidente.to_dict()
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
+
+class SolucionPayload(BaseModel):
+    plan_accion: str
+    solucion: str
+
+class EdicionIncidentePayload(BaseModel):
+    titulo: str
+    descripcion: str
+    estudiantes: List[str]
+    plan_accion: str
+    solucion: str
+
+@app.put("/incidentes/{id_incidente}/solucion")
+async def asignar_solucion(id_incidente: int, payload: SolucionPayload):
+    try:
+        incidente = gestor.asignar_solucion(
+            id_incidente=id_incidente,
+            plan_accion=payload.plan_accion,
+            solucion=payload.solucion
+        )
+        return incidente.to_dict()
     except ValueError as err:
         raise HTTPException(
             status_code=400,
             detail=str(err)
         )
 
+@app.get("/incidentes/buscar")
+async def buscar_incidentes(termino: str = None, fecha: str = None): 
+    try:
+        if not termino or not termino.strip():
+            resultados = gestor.obtener_historial()
+        else:
+            resultados = gestor.filtrar_por_estudiante(termino)
+
+        if fecha and fecha.strip():
+            resultados = [inc for inc in resultados if inc.fecha_i and fecha in str(inc.fecha_i)]
+            
+        return [inc.to_dict() for inc in resultados]
+    except Exception as e:
+        print(f"Error en la búsqueda de la base de datos: {e}")
+        raise HTTPException(status_code=500, detail="Error interno al procesar el filtro.")
+    
 @app.get("/reincidencias")
 async def obtener_reincidencias():
 
@@ -113,3 +169,24 @@ async def obtener_reincidencias():
         reincidencia.to_dict()
         for reincidencia in gestor_reincidencias.obtener_todas()
     ]
+    
+@app.put("/incidentes/{id_incidente}/editar")
+async def editar_incidente_completo(id_incidente: int, payload: EdicionIncidentePayload):
+    try:
+        incidente = gestor.editar_incidente(
+            id_incidente=id_incidente,
+            nuevo_titulo=payload.titulo,
+            nueva_descripcion=payload.descripcion,
+            nuevos_estudiantes=payload.estudiantes,
+            nueva_solucion=payload.solucion
+        )
+        
+        incidente.plan_accion_i = payload.plan_accion
+        gestor.repo.guardar_todos(gestor.incidentes)
+        
+        return incidente.to_dict()
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
+    except Exception as e:
+        print(f"Error al editar: {e}")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")

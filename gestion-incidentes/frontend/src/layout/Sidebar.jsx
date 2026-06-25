@@ -6,8 +6,6 @@ function Sidebar({ vistaActual, cambiarVista }) {
     { id: "incident", label: "Registro de Incidentes", icon: "triangle" },
     { id: "reinc", label: "Reincidencias", icon: "link" },
     { id: "dir", label: "Directorio Estudiantil", icon: "users" },
-    //{ id: "rep", label: "Reportes Académicos", icon: "chart" },
-    //{ id: "cfg", label: "Configuración", icon: "gear" },
   ];
 
   return (
