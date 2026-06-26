@@ -20,8 +20,8 @@ function App() {
     setVistaActual(rol === "profesor" ? "dir" : "dash");
   };
 
-  const manejarLogout = () => {
-    
+  const manejarLogout = async () => {
+
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     localStorage.removeItem("usuario_rol");
