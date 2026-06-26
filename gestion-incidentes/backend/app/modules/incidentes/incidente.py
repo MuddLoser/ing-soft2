@@ -139,6 +139,12 @@ class GestorCasos:
                         break # Si encuentra coincidencia, agrega el incidente y pasa al siguiente
                         
         return resultados
+
+    def filtrar_por_gravedad(self, gravedad):
+        return [
+            inc for inc in self.incidentes
+            if inc.gravedad == gravedad
+        ]
     
     def formalizar_incidente(self, id_incidente):
         incidente = self.buscar_por_id(id_incidente)
@@ -320,6 +326,7 @@ def main():
             print("1. Ver todo el historial")
             print("2. Filtrar por fecha")
             print("3. Filtrar por estudiante")
+            print("4. Filtrar por gravedad")
 
             filtro = input("Seleccione una opción: ").strip()
 
@@ -333,6 +340,24 @@ def main():
             elif filtro == "3":
                 estudiante = input("Ingrese el nombre del estudiante: ").strip()
                 resultados = gestor.filtrar_por_estudiante(estudiante)
+
+            elif filtro == "4":
+                print("\nSeleccione la gravedad:")
+                print("1. Leve")
+                print("2. Moderada")
+                print("3. Alta")
+
+                opcion = input("Opción: ").strip()
+
+                if opcion == "1":
+                    resultados = gestor.filtrar_por_gravedad("Leve")
+                elif opcion == "2":
+                    resultados = gestor.filtrar_por_gravedad("Moderada")
+                elif opcion == "3":
+                    resultados = gestor.filtrar_por_gravedad("Alta")
+                else:
+                    print("Opción inválida.")
+                    continue
 
             else:
                 print("Opción inválida.")
