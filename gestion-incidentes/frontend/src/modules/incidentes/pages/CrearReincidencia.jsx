@@ -339,17 +339,6 @@ function CrearReincidencia({ onSwitch }) {
 
   return (
     <div className="page reincidencia-page">
-      <div className="breadcrumb">
-        <a href="#">Registro de Incidentes</a>
-        <span className="sep">
-          <Icon name="chev" size={13} />
-        </span>
-        <a href="#">Reincidencias</a>
-        <span className="sep">
-          <Icon name="chev" size={13} />
-        </span>
-        <span className="current">Nueva Agrupación</span>
-      </div>
 
       {successMessage && (
         <div

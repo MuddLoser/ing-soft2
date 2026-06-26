@@ -2,7 +2,6 @@ import { useState } from "react";
 import Login from "./modules/incidentes/pages/Login";
 import MainLayout from "./layout/MainLayout";
 import RegistrarIncidente from "./modules/incidentes/pages/RegistrarIncidente";
-import CrearReincidencia from "./modules/incidentes/pages/CrearReincidencia";
 import PanelControl from "./modules/incidentes/pages/PanelControl";
 import DirectorioEstudiantil from "./modules/incidentes/pages/DirectorioEstudiantil";
 import CrearReincidencia from "./modules/incidentes/pages/CrearReincidencia";
