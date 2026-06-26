@@ -70,6 +70,12 @@ Luego abre en el navegador la URL que indique la terminal. Normalmente será:
 http://localhost:5173
 ```
 
+## Credenciales para programa
+
+Para acceder a las funciones del programa se usan dos cuentas de prueba:
+- La cuenta de profesor: rsalazar2504 / Contraseña: 1234
+- La cuenta de inspector o encargado de convivencia: psoto3467 / Contraseña: admin123
+
 ## Detener el servidor
 
 Para detener el servidor de desarrollo, presiona:
