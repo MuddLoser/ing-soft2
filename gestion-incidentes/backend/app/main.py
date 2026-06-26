@@ -151,7 +151,11 @@ async def obtener_reincidencia(id_reincidencia: int):
     return reincidencia.to_dict()
 
 @app.get("/incidentes/buscar")
-async def buscar_incidentes(termino: str = None, fecha: str = None): 
+async def buscar_incidentes(
+    termino: str = None,
+    fecha: str = None,
+    gravedad: str = None
+):
     try:
         if not termino or not termino.strip():
             resultados = gestor.obtener_historial()
@@ -159,12 +163,27 @@ async def buscar_incidentes(termino: str = None, fecha: str = None):
             resultados = gestor.filtrar_por_estudiante(termino)
 
         if fecha and fecha.strip():
-            resultados = [inc for inc in resultados if inc.fecha_i and fecha in str(inc.fecha_i)]
-            
+            resultados = [
+                inc for inc in resultados
+                if inc.fecha_i and fecha in str(inc.fecha_i)
+            ]
+
+        if gravedad and gravedad.strip() and gravedad != "todas":
+            gravedad_limpia = gravedad.lower().strip()
+
+            resultados = [
+                inc for inc in resultados
+                if (inc.gravedad or "").lower().strip() == gravedad_limpia
+            ]
+
         return [inc.to_dict() for inc in resultados]
+
     except Exception as e:
         print(f"Error en la búsqueda de la base de datos: {e}")
-        raise HTTPException(status_code=500, detail="Error interno al procesar el filtro.")
+        raise HTTPException(
+            status_code=500,
+            detail="Error interno al procesar el filtro."
+        )
     
 @app.get("/reincidencias")
 async def obtener_reincidencias():

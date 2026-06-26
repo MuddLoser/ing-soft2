@@ -46,7 +46,10 @@ class Incidente:
             data.get("estudiantes_asociados", []),
             data.get("reportado_por", "Desconocido"),
             data.get("solucion_i", ""),
-            data.get("plan_accion_i", "")
+            data.get("plan_accion_i", ""),
+            data.get("gravedad", "moderado"),
+            data.get("lugar", ""),
+            data.get("categorias", [])
         )
 
     def imprimir_informacion(self):
@@ -141,9 +144,10 @@ class GestorCasos:
         return resultados
 
     def filtrar_por_gravedad(self, gravedad):
+        gravedad_limpia = gravedad.lower().strip()
         return [
             inc for inc in self.incidentes
-            if inc.gravedad == gravedad
+            if (inc.gravedad or "").lower().strip() == gravedad_limpia
         ]
     
     def formalizar_incidente(self, id_incidente):
