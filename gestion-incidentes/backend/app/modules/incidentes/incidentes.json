@@ -38,5 +38,25 @@
             "Falta de respeto",
             "Conducta disruptiva en aula"
         ]
+    },
+    {
+        "id_i": 14,
+        "titulo_i": "Alumnos se golpean",
+        "descripcion_i": "Los alumnos se enfrentaron a golpes",
+        "fecha_i": "2026-06-26T14:13",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Mateo Sanhueza",
+            "Joaquín López"
+        ],
+        "reportado_por": "Profesor de Matemáticas - Rodrigo Salazar",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "grave",
+        "lugar": "Cancha deportiva",
+        "categorias": [
+            "Agresión física",
+            "Conflicto entre pares"
+        ]
     }
 ]
