@@ -55,7 +55,7 @@
         "titulo_i": "tres tristes tigres",
         "descripcion_i": "tres tristes tigres trigo tragaban en un trigal",
         "fecha_i": "2026-06-24T18:44",
-        "estado_i": "Reportado",
+        "estado_i": "Formalizado",
         "estudiantes_asociados": [
             "Miguel Jackson",
             "Florencia Casas"
@@ -72,7 +72,7 @@
         "titulo_i": "sopa de macaco",
         "descripcion_i": "uma delicia",
         "fecha_i": "2026-06-24T19:13",
-        "estado_i": "Reportado",
+        "estado_i": "Formalizado",
         "estudiantes_asociados": [
             "Miguel Jackson",
             "Benjamín Muñoz"
@@ -86,11 +86,10 @@
     },
     {
         "id_i": 6,
-<<<<<<< HEAD
         "titulo_i": "Duelo a muerte con cuchillos",
         "descripcion_i": "Estudiantes se desafian a un duelo a muerte con cuchillos",
         "fecha_i": "2026-06-25T21:10",
-        "estado_i": "Reportado",
+        "estado_i": "Formalizado",
         "estudiantes_asociados": [
             "Joaquín López",
             "Benjamín Muñoz"
@@ -98,30 +97,8 @@
         "reportado_por": "Inspectora Andrea Pinto",
         "solucion_i": "",
         "plan_accion_i": "",
-        "gravedad": "grave",
-        "lugar": "Biblioteca",
-        "categorias": [
-            "Conducta disruptiva en aula",
-            "Conflicto entre pares",
-            "Agresión física",
-            "Otro"
-=======
-        "titulo_i": "gugugaga",
-        "descripcion_i": "gugugugagagaga",
-        "fecha_i": "2024-02-15T15:54",
-        "estado_i": "Reportado",
-        "estudiantes_asociados": [
-            "Camila Soto"
-        ],
-        "reportado_por": "Profesor Rodrigo Salazar — Matemáticas",
-        "solucion_i": "",
-        "plan_accion_i": "",
-        "gravedad": "grave",
-        "lugar": "Patio principal",
-        "categorias": [
-            "Conducta disruptiva en aula",
-            "Uso indebido de dispositivos"
->>>>>>> 3b135763eb734d68a910a20d6d24fda4350e9f1d
-        ]
+        "gravedad": "Moderado",
+        "lugar": "",
+        "categorias": []
     }
 ]
