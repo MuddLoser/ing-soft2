@@ -66,18 +66,22 @@ export async function getEstudiantes() {
   return response.json();
 }
 
-export async function buscarIncidentesEnBackend(termino,fecha) {
+export async function buscarIncidentesEnBackend(termino, fecha, gravedad) {
   const params = new URLSearchParams();
-  
-  if (termino) params.append("termino", termino);
-  if (fecha) params.append("fecha", fecha); 
 
-  const url = `${API_URL}/incidentes/buscar?${params.toString()}`;  
+  if (termino) params.append("termino", termino);
+  if (fecha) params.append("fecha", fecha);
+  if (gravedad && gravedad !== "todas") {
+    params.append("gravedad", gravedad);
+  }
+
+  const url = `${API_URL}/incidentes/buscar?${params.toString()}`;
   const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error("Error al obtener los datos filtrados");
   }
+
   return response.json();
 }
 
