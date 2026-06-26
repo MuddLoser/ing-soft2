@@ -10,7 +10,7 @@ class Reincidencia:
     def __init__(
         self,
         id_r,
-        persona_foco,
+        personas_foco,
         personas_involucradas,
         incidentes_asociados,
         encargado_seguimiento,
@@ -19,7 +19,8 @@ class Reincidencia:
         analisis
     ):
         self.id_r = id_r
-        self.persona_foco = persona_foco
+        self.personas_foco = personas_foco
+        self.persona_foco = ", ".join(personas_foco)
         self.personas_involucradas = personas_involucradas
         self.incidentes_asociados = incidentes_asociados
         self.encargado_seguimiento = encargado_seguimiento
@@ -31,6 +32,7 @@ class Reincidencia:
         return {
             "id_r": self.id_r,
             "persona_foco": self.persona_foco,
+            "personas_foco": self.personas_foco,
             "personas_involucradas": self.personas_involucradas,
             "incidentes_asociados": self.incidentes_asociados,
             "encargado_seguimiento": self.encargado_seguimiento,
@@ -41,9 +43,19 @@ class Reincidencia:
 
     @classmethod
     def from_dict(cls, data):
+        personas_foco = data.get("personas_foco")
+
+        if personas_foco is None:
+            persona_foco = data.get("persona_foco", "")
+            personas_foco = [
+                nombre.strip()
+                for nombre in persona_foco.split(",")
+                if nombre.strip()
+            ]
+
         return cls(
             data["id_r"],
-            data["persona_foco"],
+            personas_foco,
             data.get("personas_involucradas", []),
             data.get("incidentes_asociados", []),
             data.get("encargado_seguimiento", ""),
@@ -51,7 +63,7 @@ class Reincidencia:
             data.get("objetivos", []),
             data.get("analisis", "")
         )
-
+    
     def imprimir_informacion(self):
         print("\n===== REINCIDENCIA =====")
         print(f"ID: {self.id_r}")
@@ -129,51 +141,51 @@ class GestorReincidencias:
         self.repo = repo
         self.reincidencias = repo.cargar_todas()
 
-def crear_reincidencia(
-    self,
-    persona_foco,
-    personas_involucradas,
-    incidentes,
-    encargado,
-    fecha_revision,
-    objetivos,
-    analisis
-):
-
-    nuevo_id = (
-        max(
-            [r.id_r for r in self.reincidencias],
-            default=0
-        ) + 1
-    )
-
-    nueva = Reincidencia(
-        nuevo_id,
-        persona_foco,
+    def crear_reincidencia(
+        self,
+        personas_foco,
         personas_involucradas,
-        incidentes,
-        encargado,
+        incidentes_asociados,
+        encargado_seguimiento,
         fecha_revision,
         objetivos,
         analisis
-    )
+    ):
 
-    self.reincidencias.append(nueva)
+        nuevo_id = (
+            max(
+                [r.id_r for r in self.reincidencias],
+                default=0
+            ) + 1
+        )
 
-    self.repo.guardar_todas(
-        self.reincidencias
-    )
+        nueva = Reincidencia(
+            nuevo_id,
+            personas_foco,
+            personas_involucradas,
+            incidentes_asociados,
+            encargado_seguimiento,
+            fecha_revision,
+            objetivos,
+            analisis
+        )
 
-    return nueva
+        self.reincidencias.append(nueva)
 
-def buscar_por_id(self, id_r):
+        self.repo.guardar_todas(
+            self.reincidencias
+        )
 
-    for r in self.reincidencias:
-        if r.id_r == id_r:
-            return r
+        return nueva
 
-    return None
+    def buscar_por_id(self, id_r):
 
-def obtener_todas(self):
-    return self.reincidencias
+        for r in self.reincidencias:
+            if r.id_r == id_r:
+                return r
+
+        return None
+
+    def obtener_todas(self):
+        return self.reincidencias
 
