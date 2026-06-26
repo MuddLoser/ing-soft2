@@ -776,7 +776,7 @@ input[type="datetime-local"] {
     font-size: 13px; font-weight: 600; color: var(--ink-700);
   }
   .field .hint { font-size: 12.5px; color: var(--ink-400); }
-  .control, input[type="text"], input[type="search"], input[type="datetime-local"], input[type="date"], select, textarea {
+  .control, input[type="text"], input[type="search"],input[type="password"], input[type="datetime-local"], input[type="date"], select, textarea {
     width: 100%;
     border: 1px solid var(--line);
     background: #fff;
