@@ -86,6 +86,7 @@
     },
     {
         "id_i": 6,
+<<<<<<< HEAD
         "titulo_i": "Duelo a muerte con cuchillos",
         "descripcion_i": "Estudiantes se desafian a un duelo a muerte con cuchillos",
         "fecha_i": "2026-06-25T21:10",
@@ -104,6 +105,23 @@
             "Conflicto entre pares",
             "Agresión física",
             "Otro"
+=======
+        "titulo_i": "gugugaga",
+        "descripcion_i": "gugugugagagaga",
+        "fecha_i": "2024-02-15T15:54",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Camila Soto"
+        ],
+        "reportado_por": "Profesor Rodrigo Salazar — Matemáticas",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "grave",
+        "lugar": "Patio principal",
+        "categorias": [
+            "Conducta disruptiva en aula",
+            "Uso indebido de dispositivos"
+>>>>>>> 3b135763eb734d68a910a20d6d24fda4350e9f1d
         ]
     }
 ]

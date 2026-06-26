@@ -3,21 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 
-# Importación de tu lógica nativa en incidente.py
 from modules.incidentes.incidente import IncidenteRepository, GestorCasos
 from modules.estudiantes.models import EstudianteRepository 
+from modules.reincidencias import ReincidenciaRepository, GestorReincidencias
 
 repo_estudiantes = EstudianteRepository()
 
 app = FastAPI(title="API de Convivencia Escolar")
 
-# Importación de lógica nativa en reincidencias.py
-from modules.reincidencias import (
-    ReincidenciaRepository,
-    GestorReincidencias
-)
+from modules.reincidencias import ( ReincidenciaRepository, GestorReincidencias )
 
-# Configuración de CORS para permitir la comunicación con el prototipo frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -26,19 +21,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Inicializamos el repositorio y gestor de incidentes
 repositorio = IncidenteRepository()
 gestor = GestorCasos(repositorio)
-
-# Inicializamos el repositorio y gestor de reincidencias
 repo_reincidencias = ReincidenciaRepository()
-gestor_reincidencias = GestorReincidencias(
-    repo_reincidencias
-)
+gestor_reincidencias = GestorReincidencias(repo_reincidencias)
 
-# ----------------------------------------------------------------
-# MODELO CORREGIDO: Coincide exactamente con el JSON del prototipo
-# ----------------------------------------------------------------
 class IncidentePayload(BaseModel):
     titulo: str
     descripcion: str
@@ -62,7 +49,6 @@ class ReincidenciaPayload(BaseModel):
 @app.post("/incidentes")
 async def crear_incidente(payload: IncidentePayload):
     try:
-        # 1. Pasamos los datos del prototipo a tu función original de Python
         nuevo_incidente = gestor.reportar_incidente(
             titulo=payload.titulo,
             descripcion=payload.descripcion,
@@ -72,14 +58,9 @@ async def crear_incidente(payload: IncidentePayload):
             lugar=payload.lugar,
             categorias=payload.categorias
         )
-        
-        # 2. Sincronizamos la fecha que viene desde la interfaz web
         nuevo_incidente.fecha_i = payload.fecha
-        
-        # 3. Guardamos en el archivo incidentes.json
         gestor.repo.guardar_todos(gestor.incidentes)
         
-        # 4. Devolvemos el diccionario. Incluye id_i que el frontend necesita para el banner.
         return nuevo_incidente.to_dict()
 
     except ValueError as err:
@@ -100,19 +81,14 @@ async def crear_reincidencia(
 
         if len(payload.personas_foco) == 0:
             raise ValueError("Debe confirmar al menos una persona foco.")
-
         if len(payload.incidentes_asociados) < 2:
             raise ValueError("Debe asociar al menos dos incidentes.")
-
         if not payload.encargado_seguimiento.strip():
             raise ValueError("Debe indicar el encargado de seguimiento.")
-
         if not payload.fecha_revision.strip():
             raise ValueError("Debe indicar la fecha de revisión.")
-
         if len(payload.objetivos) == 0:
             raise ValueError("Debe seleccionar al menos un objetivo.")
-
         if not payload.analisis.strip():
             raise ValueError("Debe registrar el análisis de la reincidencia.")
 
@@ -226,3 +202,23 @@ async def editar_incidente_completo(id_incidente: int, payload: EdicionIncidente
     except Exception as e:
         print(f"Error al editar: {e}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
+    
+@app.post("/reincidencias")
+async def crear_reincidencia(payload: ReincidenciaPayload):
+    try:
+        nueva = gestor_reincidencias.crear_reincidencia(
+            persona_foco=payload.persona_foco,
+            personas_involucradas=payload.personas_involucradas,
+            incidentes=payload.incidentes_asociados,
+            encargado=payload.encargado_seguimiento,
+            fecha_revision=payload.fecha_revision,
+            objetivos=payload.objetivos,
+            analisis=payload.analisis
+        )
+        return nueva.to_dict()
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
+
+@app.get("/reincidencias")
+async def obtener_reincidencias():
+    return [reincidencia.to_dict() for reincidencia in gestor_reincidencias.obtener_todas()]

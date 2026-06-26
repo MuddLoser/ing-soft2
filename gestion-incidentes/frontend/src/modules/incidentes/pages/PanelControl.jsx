@@ -119,9 +119,6 @@ function PanelControl() {
 
   return (
     <div className="page">
-      <div className="breadcrumb">
-        <span className="current">Panel de Control</span>
-      </div>
 
       <div className="card">
         <div className="card-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>

@@ -7,17 +7,8 @@ ARCHIVO_REINCIDENCIAS = os.path.join(
 )
 
 class Reincidencia:
-    def __init__(
-        self,
-        id_r,
-        personas_foco,
-        personas_involucradas,
-        incidentes_asociados,
-        encargado_seguimiento,
-        fecha_revision,
-        objetivos,
-        analisis
-    ):
+    def __init__(self, id_r, personas_foco, personas_involucradas, incidentes_asociados, encargado_seguimiento, 
+                 fecha_revision, objetivos, analisis):
         self.id_r = id_r
         self.personas_foco = personas_foco
         self.persona_foco = ", ".join(personas_foco)
@@ -27,7 +18,6 @@ class Reincidencia:
         self.fecha_revision = fecha_revision
         self.objetivos = objetivos
         self.analisis = analisis
-
     def to_dict(self):
         return {
             "id_r": self.id_r,
@@ -70,31 +60,12 @@ class Reincidencia:
         print(f"Persona foco: {self.persona_foco}")
 
         if self.personas_involucradas:
-            print(
-                "Personas involucradas: "
-                + ", ".join(self.personas_involucradas)
-            )
+            print( "Personas involucradas: " + ", ".join(self.personas_involucradas))
 
-        print(
-            f"Incidentes asociados: "
-            f"{', '.join(map(str, self.incidentes_asociados))}"
-        )
-
-        print(
-            f"Encargado seguimiento: "
-            f"{self.encargado_seguimiento}"
-        )
-
-        print(
-            f"Fecha revisión: "
-            f"{self.fecha_revision}"
-        )
-
-        print(
-            "Objetivos: "
-            + ", ".join(self.objetivos)
-        )
-
+        print(f"Incidentes asociados: "f"{', '.join(map(str, self.incidentes_asociados))}")
+        print(f"Encargado seguimiento: "f"{self.encargado_seguimiento}")
+        print(f"Fecha revisión: "f"{self.fecha_revision}")
+        print("Objetivos: "+ ", ".join(self.objetivos))
         print(f"Análisis:\n{self.analisis}")
 
 class ReincidenciaRepository:
@@ -141,16 +112,8 @@ class GestorReincidencias:
         self.repo = repo
         self.reincidencias = repo.cargar_todas()
 
-    def crear_reincidencia(
-        self,
-        personas_foco,
-        personas_involucradas,
-        incidentes_asociados,
-        encargado_seguimiento,
-        fecha_revision,
-        objetivos,
-        analisis
-    ):
+    def crear_reincidencia(self, personas_foco,personas_involucradas,incidentes_asociados, encargado_seguimiento,
+                           fecha_revision, objetivos, analisis):
 
         nuevo_id = (
             max(
