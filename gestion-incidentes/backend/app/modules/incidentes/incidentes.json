@@ -1,4 +1,5 @@
-{
+[
+    {
         "id_i": 12,
         "titulo_i": "Discusión entre alumnos durante el recreo",
         "descripcion_i": "El día jueves 11 a las 10:10, durante el recreo de la mañana, los alumnos Benjamín Muñoz del 3°B y Antonia Rivas del 4°C fueron sorprendidos discutiendo a viva voz en el patio, usando lenguaje soez e insultos personales.",
@@ -19,3 +20,4 @@
             "Conflicto entre pares"
         ]
     }
+]
