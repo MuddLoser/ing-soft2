@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Icon from "../../../shared/icons/Icon";
-import { getEstudiantes, obtenerIncidentes } from "../../../api/incidentesApi";
+import {
+  getEstudiantes,
+  obtenerIncidentes,
+  crearReincidencia,
+} from "../../../api/incidentesApi";
 
 const OBJECTIVES = [
   "Reducir la frecuencia de incidentes",
@@ -11,14 +15,14 @@ const OBJECTIVES = [
   "Derivación a redes externas",
 ];
 
-const DEFAULT_FOCUS = {
-  initials: "MV",
-  name: "Martina Vargas",
-  grade: "2°A",
-  rut: "22.145.876-3",
-  apoderado: "Lorena Díaz",
-  tag: "Foco principal",
-};
+function getInitials(name) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("");
+}
 
 function getLocalDateInputValue(daysToAdd = 0) {
   const date = new Date();
@@ -38,14 +42,8 @@ function normalizarEstudiante(student) {
     id: student.id || student.id_estudiante || student.rut || name,
     name,
     grade: student.grade || student.curso || "Sin curso",
-    initials:
-      student.initials ||
-      name
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((parte) => parte[0].toUpperCase())
-        .join(""),
+    rut: student.rut || "RUT no registrado",
+    initials: student.initials || getInitials(name),
   };
 }
 
@@ -80,21 +78,22 @@ function CrearReincidencia({ onSwitch }) {
 
   const [query, setQuery] = useState("");
   const [sevFilter, setSevFilter] = useState("todas");
-
   const [selectedIds, setSelectedIds] = useState(new Set());
+
+  const [focusPersons, setFocusPersons] = useState([]);
+  const [focusSearch, setFocusSearch] = useState("");
+  const [focusEdited, setFocusEdited] = useState(false);
+
   const [objetivos, setObjetivos] = useState(
     new Set([OBJECTIVES[0], OBJECTIVES[4]])
   );
-
   const [responsable, setResponsable] = useState("");
   const [revisionDate, setRevisionDate] = useState(getLocalDateInputValue(14));
   const [analysis, setAnalysis] = useState("");
 
-  const [searchPerson, setSearchPerson] = useState("");
-  const [additionalPersons, setAdditionalPersons] = useState([]);
-
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     obtenerIncidentes()
@@ -145,22 +144,70 @@ function CrearReincidencia({ onSwitch }) {
     return incidentesConMeta.filter((inc) => selectedIds.has(inc.id));
   }, [incidentesConMeta, selectedIds]);
 
-  const personSearchResults = useMemo(() => {
-    const q = searchPerson.trim().toLowerCase();
+  const personasFocoSugeridas = useMemo(() => {
+    const conteo = new Map();
+
+    selectedIncidents.forEach((incidente) => {
+      incidente.students.forEach((studentName) => {
+        const actual = conteo.get(studentName) || 0;
+        conteo.set(studentName, actual + 1);
+      });
+    });
+
+    const repetidos = Array.from(conteo.entries())
+      .filter(([, count]) => count >= 2)
+      .sort((a, b) => b[1] - a[1]);
+
+    return repetidos.map(([name, count]) => {
+      const estudianteCompleto = estudiantes.find(
+        (student) => student.name === name
+      );
+
+      return {
+        id: estudianteCompleto?.id || name,
+        name,
+        count,
+        initials: estudianteCompleto?.initials || getInitials(name),
+        grade: estudianteCompleto?.grade || "Curso no registrado",
+        rut: estudianteCompleto?.rut || "RUT no registrado",
+      };
+    });
+  }, [selectedIncidents, estudiantes]);
+
+  useEffect(() => {
+    if (!focusEdited) {
+      setFocusPersons(personasFocoSugeridas);
+    }
+  }, [personasFocoSugeridas, focusEdited]);
+
+  const focusSearchResults = useMemo(() => {
+    const q = focusSearch.trim().toLowerCase();
 
     if (!q) return [];
 
     return estudiantes.filter((student) => {
-      const alreadyAdded = additionalPersons.some((added) => added.id === student.id);
-      const isDefaultFocus = student.name === DEFAULT_FOCUS.name;
-
-      return (
-        student.name.toLowerCase().includes(q) &&
-        !alreadyAdded &&
-        !isDefaultFocus
+      const alreadyAdded = focusPersons.some(
+        (person) => person.name === student.name
       );
+
+      return student.name.toLowerCase().includes(q) && !alreadyAdded;
     });
-  }, [searchPerson, estudiantes, additionalPersons]);
+  }, [focusSearch, estudiantes, focusPersons]);
+
+  const personasInvolucradasSecundarias = useMemo(() => {
+    const focusNames = new Set(focusPersons.map((person) => person.name));
+    const involucradas = new Set();
+
+    selectedIncidents.forEach((incidente) => {
+      incidente.students.forEach((studentName) => {
+        if (!focusNames.has(studentName)) {
+          involucradas.add(studentName);
+        }
+      });
+    });
+
+    return Array.from(involucradas);
+  }, [selectedIncidents, focusPersons]);
 
   const toggleIncident = (id) => {
     const next = new Set(selectedIds);
@@ -172,6 +219,27 @@ function CrearReincidencia({ onSwitch }) {
     }
 
     setSelectedIds(next);
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+    setFocusEdited(false);
+  };
+
+  const addFocusPerson = (person) => {
+    setFocusPersons([...focusPersons, person]);
+    setFocusSearch("");
+    setFocusEdited(true);
+  };
+
+  const removeFocusPerson = (id) => {
+    setFocusPersons(focusPersons.filter((person) => person.id !== id));
+    setFocusEdited(true);
+  };
+
+  const applyAutomaticFocusSuggestion = () => {
+    setFocusPersons(personasFocoSugeridas);
+    setFocusEdited(false);
   };
 
   const toggleObjective = (objective) => {
@@ -186,22 +254,13 @@ function CrearReincidencia({ onSwitch }) {
     setObjetivos(next);
   };
 
-  const addPerson = (person) => {
-    setAdditionalPersons([...additionalPersons, person]);
-    setSearchPerson("");
-  };
-
-  const removePerson = (id) => {
-    setAdditionalPersons(additionalPersons.filter((person) => person.id !== id));
-  };
-
-  const clearSelection = () => {
-    setSelectedIds(new Set());
-  };
-
   const validarFormulario = () => {
     if (selectedIncidents.length < 2) {
       return "Seleccione al menos 2 incidentes para agrupar en la reincidencia.";
+    }
+
+    if (focusPersons.length === 0) {
+      return "Debe confirmar al menos una persona foco para crear la reincidencia.";
     }
 
     if (!responsable.trim()) {
@@ -223,7 +282,7 @@ function CrearReincidencia({ onSwitch }) {
     return null;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setSuccessMessage("");
     setErrorMessage("");
 
@@ -235,23 +294,47 @@ function CrearReincidencia({ onSwitch }) {
     }
 
     const payload = {
-      incidentes: selectedIncidents.map((inc) => inc.id),
-      responsable,
+      personas_foco: focusPersons.map((person) => person.name),
+      personas_involucradas: personasInvolucradasSecundarias,
+      incidentes_asociados: selectedIncidents.map((inc) => Number(inc.id)),
+      encargado_seguimiento: responsable,
       fecha_revision: revisionDate,
       objetivos: Array.from(objetivos),
       analisis: analysis,
-      estudiantes_involucrados: [
-        DEFAULT_FOCUS.name,
-        ...additionalPersons.map((person) => person.name),
-      ],
-      estado: "En seguimiento",
     };
 
-    console.log("Crear reincidencia payload:", payload);
+    try {
+      setSaving(true);
 
-    setSuccessMessage(
-      "Reincidencia guardada correctamente. Pronto podrás sincronizarla con el backend."
-    );
+      const reincidenciaCreada = await crearReincidencia(payload);
+
+      setSuccessMessage(
+        `Reincidencia registrada correctamente. Folio: ${reincidenciaCreada.id_r}`
+      );
+
+      setSelectedIds(new Set());
+      setFocusPersons([]);
+      setFocusSearch("");
+      setFocusEdited(false);
+      setResponsable("");
+      setRevisionDate(getLocalDateInputValue(14));
+      setObjetivos(new Set([OBJECTIVES[0], OBJECTIVES[4]]));
+      setAnalysis("");
+
+      if (onSwitch) {
+        setTimeout(() => {
+          onSwitch();
+        }, 1500);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(
+        error.message ||
+          "No se pudo registrar la reincidencia. Revise la conexión con el backend."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -267,8 +350,6 @@ function CrearReincidencia({ onSwitch }) {
         </span>
         <span className="current">Nueva Agrupación</span>
       </div>
-
-      
 
       {successMessage && (
         <div
@@ -302,106 +383,21 @@ function CrearReincidencia({ onSwitch }) {
         </div>
       )}
 
-      <div className="reincidencia-form-layout">
+      <div className="reincidencia-layout">
         <div className="card reincidencia-card">
-            <div className="card-header reincidencia-card-header">
+          <div className="card-header reincidencia-card-header">
             <div className="reincidencia-header-content">
-                
-
-                <h2>Registrar Reincidencia</h2>
-
-                <p>
+              <h2>Registrar Reincidencia</h2>
+              <p>
                 Agrupa incidentes relacionados para detectar un patrón de conducta,
                 organizar el seguimiento y definir medidas de intervención.
-                </p>
+              </p>
             </div>
 
-        <div className="reincidencia-header-icon">
-                <Icon name="link" size={22} />
+            <div className="reincidencia-header-icon">
+              <Icon name="link" size={22} />
             </div>
-            </div>
-          <section className="section">
-            <h3 className="section-title">
-              <span className="ico">
-                <Icon name="users" size={16} />
-              </span>
-              Persona(s) Foco del Patrón
-            </h3>
-
-            <p className="section-sub">
-              Estudiante(s) que se ven involucrados de forma reiterada en los
-              incidentes agrupados.
-            </p>
-
-            <div className="focus-person">
-              <div className="ava">{DEFAULT_FOCUS.initials}</div>
-
-              <div className="meta">
-                <div className="nm">
-                  {DEFAULT_FOCUS.name} · {DEFAULT_FOCUS.grade}
-                </div>
-                <div className="dt">
-                  RUT {DEFAULT_FOCUS.rut} · Apoderada: {DEFAULT_FOCUS.apoderado}
-                </div>
-              </div>
-
-              <span className="focus-tag">{DEFAULT_FOCUS.tag}</span>
-            </div>
-
-            <div className="field" style={{ marginTop: 14 }}>
-              <label>Agregar otra persona involucrada (opcional)</label>
-
-              <div className="search-input">
-                <Icon name="search" size={16} />
-                <input
-                  type="text"
-                  placeholder="Buscar estudiante por nombre o RUT..."
-                  value={searchPerson}
-                  onChange={(event) => setSearchPerson(event.target.value)}
-                />
-              </div>
-
-              {loadingEstudiantes && searchPerson && (
-                <div className="empty-state" style={{ marginTop: 10 }}>
-                  Cargando estudiantes...
-                </div>
-              )}
-
-              {personSearchResults.length > 0 && (
-                <div className="search-results">
-                  {personSearchResults.map((student) => (
-                    <button
-                      key={student.id}
-                      type="button"
-                      className="result-item"
-                      onClick={() => addPerson(student)}
-                    >
-                      <span>{student.name}</span>
-                      <span>{student.grade}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {additionalPersons.length > 0 && (
-                <div className="chips" style={{ marginTop: 10 }}>
-                  {additionalPersons.map((person) => (
-                    <span key={person.id} className="chip">
-                      <span className="avatar-sm">{person.initials}</span>
-                      <span className="name">{person.name}</span>
-                      <button
-                        type="button"
-                        className="x"
-                        onClick={() => removePerson(person.id)}
-                      >
-                        <Icon name="x" size={12} stroke={2.5} />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
+          </div>
 
           <section className="section">
             <h3 className="section-title">
@@ -412,8 +408,7 @@ function CrearReincidencia({ onSwitch }) {
             </h3>
 
             <p className="section-sub">
-              Seleccione los incidentes previos que conforman esta situación
-              reiterada.
+              Seleccione los incidentes previos que conforman esta situación reiterada.
             </p>
 
             {selectedIds.size > 0 && (
@@ -502,9 +497,7 @@ function CrearReincidencia({ onSwitch }) {
 
                         <span className="meta-item">
                           <Icon name="users" size={13} />{" "}
-                          {inc.students.length > 0
-                            ? inc.students.join(", ")
-                            : "-"}
+                          {inc.students.length > 0 ? inc.students.join(", ") : "-"}
                         </span>
                       </div>
                     </div>
@@ -517,14 +510,123 @@ function CrearReincidencia({ onSwitch }) {
           <section className="section">
             <h3 className="section-title">
               <span className="ico">
+                <Icon name="users" size={16} />
+              </span>
+              Personas foco del patrón
+            </h3>
+
+            <p className="section-sub">
+              El sistema sugiere estudiantes que aparecen repetidamente en los incidentes
+              seleccionados. Puede confirmar, quitar o agregar personas foco manualmente.
+            </p>
+
+            {personasFocoSugeridas.length > 0 && (
+              <div className="info-banner" style={{ marginBottom: 14 }}>
+                <span className="ico">
+                  <Icon name="check" size={16} />
+                </span>
+
+                <div>
+                  Sugerencia automática: {" "}
+                  <strong>
+                    {personasFocoSugeridas.map((person) => person.name).join(", ")}
+                  </strong>
+                  .
+                  {focusEdited && (
+                    <button
+                      type="button"
+                      className="clear"
+                      onClick={applyAutomaticFocusSuggestion}
+                      style={{ marginLeft: 10 }}
+                    >
+                      Usar sugerencia
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {focusPersons.length > 0 ? (
+              <div className="chips" style={{ marginBottom: 14 }}>
+                {focusPersons.map((person) => (
+                  <span key={person.id} className="chip">
+                    <span className="avatar-sm">{person.initials}</span>
+                    <span className="name">
+                      {person.name}
+                      {person.count ? ` · ${person.count} incidentes` : ""}
+                    </span>
+
+                    <button
+                      type="button"
+                      className="x"
+                      onClick={() => removeFocusPerson(person.id)}
+                      aria-label="Quitar persona foco"
+                    >
+                      <Icon name="x" size={12} stroke={2.5} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state" style={{ marginBottom: 14 }}>
+                No hay personas foco confirmadas. Seleccione incidentes con estudiantes
+                repetidos o agregue una persona manualmente.
+              </div>
+            )}
+
+            <div className="field">
+              <label>Agregar persona foco manualmente</label>
+
+              <div className="search-input">
+                <Icon name="search" size={16} />
+                <input
+                  type="text"
+                  placeholder="Buscar estudiante por nombre..."
+                  value={focusSearch}
+                  onChange={(event) => setFocusSearch(event.target.value)}
+                />
+              </div>
+
+              {loadingEstudiantes && focusSearch && (
+                <div className="empty-state" style={{ marginTop: 10 }}>
+                  Cargando estudiantes...
+                </div>
+              )}
+
+              {focusSearchResults.length > 0 && (
+                <div className="search-results">
+                  {focusSearchResults.map((student) => (
+                    <button
+                      key={student.id}
+                      type="button"
+                      className="result-item"
+                      onClick={() => addFocusPerson(student)}
+                    >
+                      <span>{student.name}</span>
+                      <span>{student.grade}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {personasInvolucradasSecundarias.length > 0 && (
+              <p className="section-sub" style={{ marginTop: 14, marginBottom: 0 }}>
+                Personas involucradas secundarias: {personasInvolucradasSecundarias.join(", ")}.
+              </p>
+            )}
+          </section>
+
+          <section className="section">
+            <h3 className="section-title">
+              <span className="ico">
                 <Icon name="target" size={16} />
               </span>
               Plan de Seguimiento
             </h3>
 
             <p className="section-sub">
-              Defina responsables, objetivos y la próxima instancia de revisión
-              del caso.
+              Defina responsables, objetivos y la próxima instancia de revisión del caso.
             </p>
 
             <div className="grid-2">
@@ -564,9 +666,7 @@ function CrearReincidencia({ onSwitch }) {
                   <button
                     key={objective}
                     type="button"
-                    className={`obj-chip ${
-                      objetivos.has(objective) ? "on" : ""
-                    }`}
+                    className={`obj-chip ${objetivos.has(objective) ? "on" : ""}`}
                     onClick={() => toggleObjective(objective)}
                   >
                     {objetivos.has(objective) && (
@@ -591,7 +691,7 @@ function CrearReincidencia({ onSwitch }) {
 
           <div className="form-actions">
             <div className="draft-status">
-              <span className="dot"></span> Borrador guardado automáticamente
+              Complete los campos requeridos para crear la reincidencia
             </div>
 
             <div className="actions-right">
@@ -606,10 +706,11 @@ function CrearReincidencia({ onSwitch }) {
               <button
                 type="button"
                 className="btn-solid"
-                disabled={selectedIncidents.length < 2}
+                disabled={selectedIncidents.length < 2 || focusPersons.length === 0 || saving}
                 onClick={handleSubmit}
               >
-                <Icon name="link" size={15} stroke={2.5} /> Crear Reincidencia
+                <Icon name="link" size={15} stroke={2.5} />
+                {saving ? "Creando..." : "Crear Reincidencia"}
               </button>
             </div>
           </div>

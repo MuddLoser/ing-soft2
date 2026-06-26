@@ -1030,7 +1030,7 @@ input[type="datetime-local"] {
    formulario en columna izquierda y sin panel de análisis. */
 
 .reincidencia-page {
-  max-width: 1140px;
+  max-width: 1080px;
 }
 
 .reincidencia-page .page-head {
@@ -1062,17 +1062,12 @@ input[type="datetime-local"] {
    - .reincidencia-form-layout queda soportado por si el JSX aún lo usa. */
 .reincidencia-layout,
 .reincidencia-form-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 758px);
-  align-items: start;
+  display: block;
+  width: 100%;
 }
 
 .reincidencia-card {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  box-shadow: 0 1px 0 rgba(20, 30, 40, 0.02);
-  overflow: hidden;
+  width: 100%;
 }
 
 .reincidencia-card .section {
