@@ -80,18 +80,30 @@
         "reportado_por": "Inspectora Andrea Pinto",
         "solucion_i": "",
         "plan_accion_i": "",
-        "gravedad": "leve",
-        "lugar": "Baños",
+        "gravedad": "Moderado",
+        "lugar": "",
+        "categorias": []
+    },
+    {
+        "id_i": 6,
+        "titulo_i": "Duelo a muerte con cuchillos",
+        "descripcion_i": "Estudiantes se desafian a un duelo a muerte con cuchillos",
+        "fecha_i": "2026-06-25T21:10",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Joaquín López",
+            "Benjamín Muñoz"
+        ],
+        "reportado_por": "Inspectora Andrea Pinto",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "grave",
+        "lugar": "Biblioteca",
         "categorias": [
             "Conducta disruptiva en aula",
-            "Agresión verbal",
-            "Uso indebido de dispositivos",
             "Conflicto entre pares",
-            "Falta de respeto",
             "Agresión física",
-            "Daño a la propiedad",
-            "Otro",
-            "Ausentismo / Atrasos"
+            "Otro"
         ]
     }
 ]

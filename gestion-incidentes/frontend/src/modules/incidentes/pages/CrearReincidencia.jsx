@@ -367,21 +367,6 @@ function CrearReincidencia({ onSwitch }) {
         </div>
       )}
 
-      {errorMessage && (
-        <div
-          className="info-banner"
-          style={{
-            borderColor: "#f3d9cb",
-            background: "#fdf1ee",
-            color: "#8a2a14",
-          }}
-        >
-          <span className="ico">
-            <Icon name="triangle" size={16} />
-          </span>
-          <div>{errorMessage}</div>
-        </div>
-      )}
 
       <div className="reincidencia-layout">
         <div className="card reincidencia-card">
@@ -393,11 +378,68 @@ function CrearReincidencia({ onSwitch }) {
                 organizar el seguimiento y definir medidas de intervención.
               </p>
             </div>
-
-            <div className="reincidencia-header-icon">
-              <Icon name="link" size={22} />
-            </div>
           </div>
+          {errorMessage && (
+            <div
+              className="info-banner"
+              style={{
+                position: "fixed",
+                bottom: "28px",
+                right: "36px",
+                width: "380px",
+                maxWidth: "90vw",
+                borderColor: "#e2b6a4",
+                background: "#fbeee8",
+                color: "#8a2a14",
+                boxShadow: "0 8px 24px rgba(138, 42, 20, 0.15)",
+                zIndex: 9999,
+                margin: 0,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  alignItems: "flex-start",
+                }}
+              >
+                <span
+                  className="ico"
+                  style={{
+                    color: "#8a2a14",
+                    marginTop: "2px",
+                  }}
+                >
+                  <Icon name="triangle" size={16} />
+                </span>
+
+                <div>{errorMessage}</div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setErrorMessage("")}
+                style={{
+                  background: "transparent",
+                  border: 0,
+                  color: "#8a2a14",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  lineHeight: 1,
+                  padding: "0 4px",
+                  cursor: "pointer",
+                }}
+                aria-label="Cerrar alerta"
+              >
+                ×
+              </button>
+            </div>
+          )}
+
+      
 
           <section className="section">
             <h3 className="section-title">
@@ -706,7 +748,7 @@ function CrearReincidencia({ onSwitch }) {
               <button
                 type="button"
                 className="btn-solid"
-                disabled={selectedIncidents.length < 2 || focusPersons.length === 0 || saving}
+                disabled={saving}
                 onClick={handleSubmit}
               >
                 <Icon name="link" size={15} stroke={2.5} />
