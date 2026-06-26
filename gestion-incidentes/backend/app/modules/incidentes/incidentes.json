@@ -19,5 +19,24 @@
             "Falta de respeto",
             "Conflicto entre pares"
         ]
+    },
+    {
+        "id_i": 13,
+        "titulo_i": "Alumno no coopera en clases ",
+        "descripcion_i": "Alumno no coopera en clases y se burla de compañeros, causando alboroto y haciendo que sus compañeros no presten atención.",
+        "fecha_i": "2026-06-25T13:00",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Mario Mario"
+        ],
+        "reportado_por": "Profesor de Matemáticas - Rodrigo Salazar",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "moderado",
+        "lugar": "Sala de clases",
+        "categorias": [
+            "Falta de respeto",
+            "Conducta disruptiva en aula"
+        ]
     }
 ]

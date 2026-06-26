@@ -21,6 +21,9 @@ function App() {
   };
 
   const manejarLogout = () => {
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     localStorage.removeItem("usuario_rol");
     localStorage.removeItem("usuario_nombre");
     setUsuarioActual(null);
