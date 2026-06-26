@@ -102,3 +102,32 @@ export async function editarIncidenteCompleto(id, datosEditados) {
 
   return response.json();
 }
+
+export async function crearReincidencia(data) {
+  const response = await fetch(`${API_URL}/reincidencias`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    const detail = errorData?.detail || "No se pudo crear la reincidencia";
+
+    throw new Error(detail);
+  }
+
+  return response.json();
+}
+
+export async function obtenerReincidencias() {
+  const response = await fetch(`${API_URL}/reincidencias`);
+
+  if (!response.ok) {
+    throw new Error("No se pudieron obtener las reincidencias");
+  }
+
+  return response.json();
+}

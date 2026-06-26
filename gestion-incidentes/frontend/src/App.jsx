@@ -27,11 +27,11 @@ function App() {
   const renderizarPantalla = () => {
     switch (vistaActual) {
       case "dash":
-        return <PanelControl />;  
+        return <PanelControl />;
       case "incident":
         return <RegistrarIncidente onSwitch={() => setVistaActual("dash")} />;
       case "reinc":
-        return <CrearReincidencia />;
+        return <CrearReincidencia onSwitch={() => setVistaActual("dash")} />;
       case "dir":
         return <DirectorioEstudiantil />;
       default:
