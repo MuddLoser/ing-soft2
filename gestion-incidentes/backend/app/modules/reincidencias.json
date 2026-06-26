@@ -40,5 +40,50 @@
             "Seguimiento con apoderado"
         ],
         "analisis": "hola amigos"
+    },
+    {
+        "id_r": 3,
+        "persona_foco": "Benjamín Muñoz",
+        "personas_foco": [
+            "Benjamín Muñoz"
+        ],
+        "personas_involucradas": [
+            "Camila Soto",
+            "Miguel Jackson"
+        ],
+        "incidentes_asociados": [
+            1,
+            5
+        ],
+        "encargado_seguimiento": "Encargada de Convivencia — Paula Soto",
+        "fecha_revision": "2026-07-10",
+        "objetivos": [
+            "Reducir la frecuencia de incidentes",
+            "Seguimiento con apoderado"
+        ],
+        "analisis": "hola"
+    },
+    {
+        "id_r": 4,
+        "persona_foco": "Martina Vargas",
+        "personas_foco": [
+            "Martina Vargas"
+        ],
+        "personas_involucradas": [
+            "Miguel Jackson",
+            "Florencia Casas",
+            "Mateo Sanhueza"
+        ],
+        "incidentes_asociados": [
+            3,
+            9
+        ],
+        "encargado_seguimiento": "Dupla psicosocial",
+        "fecha_revision": "2026-07-10",
+        "objetivos": [
+            "Reducir la frecuencia de incidentes",
+            "Seguimiento con apoderado"
+        ],
+        "analisis": "dsgfhgjkhgf"
     }
 ]

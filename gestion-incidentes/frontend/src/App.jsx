@@ -8,7 +8,10 @@ import CrearReincidencia from "./modules/incidentes/pages/CrearReincidencia";
 
 function App() {
   const [usuarioActual, setUsuarioActual] = useState(() => { return localStorage.getItem("usuario_rol") || null; });
-  const [vistaActual, setVistaActual] = useState("dash");
+  const [vistaActual, setVistaActual] = useState(() => {
+    const rolGuardado = localStorage.getItem("usuario_rol");
+    return rolGuardado === "profesor" ? "dir" : "dash";
+  });
 
   const manejarLogin = (rol, nombre) => {
     localStorage.setItem("usuario_rol", rol);
@@ -29,7 +32,7 @@ function App() {
       case "dash":
         return <PanelControl />;
       case "incident":
-        return <RegistrarIncidente onSwitch={() => setVistaActual("dash")} />;
+        return <RegistrarIncidente onSwitch={() => setVistaActual(usuarioActual === "profesor" ? "dir" : "dash")} />;
       case "reinc":
         return <CrearReincidencia onSwitch={() => setVistaActual("dash")} />;
       case "dir":

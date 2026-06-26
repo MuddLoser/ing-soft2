@@ -5,7 +5,7 @@ function Sidebar({ vistaActual, cambiarVista, onLogout }) {
 
   const items = [
     { id: "dash", label: "Panel de Control", icon: "grid", rolesPermitidos: ["inspector"]},
-    { id: "reinc", label: "Reincidencias", icon: "triangle", rolesPermitidos: ["inspector"] },
+    { id: "reinc", label: "Reincidencias", icon: "link", rolesPermitidos: ["inspector"] },
     { id: "dir", label: "Directorio Estudiantil", icon: "users", rolesPermitidos: ["profesor", "inspector"] },
   ];
   const itemsVisibles = items.filter(item => item.rolesPermitidos.includes(rolUsuario));

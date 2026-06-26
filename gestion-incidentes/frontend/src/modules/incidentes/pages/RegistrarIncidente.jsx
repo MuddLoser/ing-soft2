@@ -43,6 +43,9 @@ function RegistrarIncidente(props) {
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
 
+  const [toast, setToast] = useState({ mostrar: false, mensaje: "" });
+  const mostrarNotificacion = (mensaje) => { setToast({ mostrar: true, mensaje });};
+
   const estudiantesFiltrados = searchTerm.trim() === "" 
     ? [] 
     : listaAlumnos.filter(estudiante => 
@@ -110,7 +113,7 @@ function RegistrarIncidente(props) {
       setLoading(true);
       const incidenteCreado = await registrarIncidente(payload);
 
-      setMensaje(`Incidente registrado correctamente. Folio: ${incidenteCreado.id_i}`);
+      mostrarNotificacion(`Incidente registrado correctamente. Folio: ${incidenteCreado.id_i}`);
 
       setTitulo("");
       setDescription("");
@@ -120,8 +123,9 @@ function RegistrarIncidente(props) {
       if (props.onSwitch) {
         setTimeout(() => {
           props.onSwitch();
-        }, 1500);
+        }, 2500);
       }
+
     } catch (err) {
       console.error(err);
       setError("No se pudo registrar el incidente. Revise la conexión con el backend.");
@@ -242,7 +246,7 @@ function RegistrarIncidente(props) {
               <label>Lugar del Incidente</label>
               <select value={lugar} onChange={(e) => setLugar(e.target.value)}>
                 <option value="" disabled>Seleccione ubicación</option>
-                <option>Sala de clases — 2°A</option>
+                <option>Sala de clases</option>
                 <option>Patio principal</option>
                 <option>Comedor</option>
                 <option>Pasillo segundo piso</option>
@@ -346,11 +350,11 @@ function RegistrarIncidente(props) {
               onChange={(event) => setAdultoResponsable(event.target.value)}
             >
               <option value="" disabled>Seleccione docente o inspector</option>
-              <option value="Profesora Carla Mendoza — Lenguaje">Profesora Carla Mendoza — Lenguaje</option>
-              <option value="Profesor Rodrigo Salazar — Matemáticas">Profesor Rodrigo Salazar — Matemáticas</option>
-              <option value="Inspectora Andrea Pinto">Inspectora Andrea Pinto</option>
-              <option value="Inspector general Luis Cárcamo">Inspector general Luis Cárcamo</option>
-              <option value="Encargada de Convivencia — Paula Soto">Encargada de Convivencia — Paula Soto</option>
+              <option value="Profesora de Lenguaje - Carla Mendoza">Profesora de Lenguaje - Carla Mendoza</option>
+              <option value="Profesor de Matemáticas - Rodrigo Salazar">Profesor de Matemáticas - Rodrigo Salazar</option>
+              <option value="Inspectora - Andrea Pinto">Inspectora - Andrea Pinto</option>
+              <option value="Inspector general - Luis Cárcamo">Inspector general - Luis Cárcamo</option>
+              <option value="Encargada de Convivencia - Paula Soto">Encargada de Convivencia - Paula Soto</option>
             </select>
           </div>
         </section>
@@ -433,6 +437,23 @@ function RegistrarIncidente(props) {
           </div>
         </div>
       </div>
+
+      {toast.mostrar && (
+        <div style={{
+          position: "fixed", bottom: "24px", right: "24px",
+          backgroundColor: "#f0fdf4",
+          color: "#166534",
+          border: "1px solid #4ade80",
+          padding: "16px 24px", borderRadius: "8px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+          display: "flex", alignItems: "center", gap: "12px",
+          zIndex: 999999, fontWeight: "600", fontSize: "14px",
+          transition: "all 0.3s ease-in-out"
+        }}>
+        {toast.mensaje}
+        </div>
+      )}
+
     </div>
   );
 }

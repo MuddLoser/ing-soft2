@@ -95,6 +95,9 @@ function CrearReincidencia({ onSwitch }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const [toast, setToast] = useState({ mostrar: false, mensaje: "" });
+  const mostrarNotificacion = (mensaje) => { setToast({ mostrar: true, mensaje });};
+
   useEffect(() => {
     obtenerIncidentes()
       .then((data) => setIncidentes(data || []))
@@ -321,10 +324,12 @@ function CrearReincidencia({ onSwitch }) {
       setObjetivos(new Set([OBJECTIVES[0], OBJECTIVES[4]]));
       setAnalysis("");
 
+      mostrarNotificacion("Reincidencia registrada correctamente en el sistema.");
+
       if (onSwitch) {
         setTimeout(() => {
           onSwitch();
-        }, 1500);
+        }, 2500);
       }
     } catch (error) {
       console.error(error);
@@ -747,6 +752,23 @@ function CrearReincidencia({ onSwitch }) {
           </div>
         </div>
       </div>
+
+      {toast.mostrar && (
+        <div style={{
+          position: "fixed", bottom: "24px", right: "24px",
+          backgroundColor: "#f0fdf4",
+          color: "#166534",
+          border: "1px solid #4ade80",
+          padding: "16px 24px", borderRadius: "8px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+          display: "flex", alignItems: "center", gap: "12px",
+          zIndex: 999999, fontWeight: "600", fontSize: "14px",
+          transition: "all 0.3s ease-in-out"
+        }}>
+          {toast.mensaje}
+        </div>
+      )}
+
     </div>
   );
 }

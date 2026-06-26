@@ -11,11 +11,6 @@ function Topbar() {
       <div className="topbar-right">
         <button className="icon-btn">
           <Icon name="bell" size={18} />
-          <span className="badge-dot"></span>
-        </button>
-
-        <button className="icon-btn">
-          <Icon name="help" size={18} />
         </button>
 
         <div className="avatar">CM</div>

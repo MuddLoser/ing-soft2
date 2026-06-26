@@ -5,6 +5,7 @@ function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const usuariosSimulados = {
     "rsalazar2504": {
@@ -22,14 +23,20 @@ function Login({ onLogin }) {
   const handleIngresar = (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     const usuarioEncontrado = usuariosSimulados[username];
 
-    if (usuarioEncontrado && usuarioEncontrado.pass === password) {
-      onLogin(usuarioEncontrado.rol, usuarioEncontrado.nombre);
-    } else {
-      setError("Usuario o contraseña incorrectos.");
-    }
+    setTimeout(() => {
+      const usuarioEncontrado = usuariosSimulados[username];
+
+      if (usuarioEncontrado && usuarioEncontrado.pass === password) {
+        onLogin(usuarioEncontrado.rol, usuarioEncontrado.nombre);
+      } else {
+        setError("Usuario o contraseña incorrectos.");
+        setLoading(false);
+      }
+    }, 1500);
   };
 
   return (
@@ -71,18 +78,23 @@ function Login({ onLogin }) {
             />
           </div>
 
-          <button type="submit" className="btn-primary" style={{ width: "100%", marginTop: "8px", padding: "12px", fontSize: "16px", cursor: "pointer" }}>
-            Iniciar Sesión
+          <button 
+            type="submit" 
+            className="btn-primary" 
+            disabled={loading} // Bloquea el botón
+            style={{ 
+              width: "100%", 
+              marginTop: "8px", 
+              padding: "12px", 
+              fontSize: "16px", 
+              cursor: loading ? "wait" : "pointer", // Cambia el cursor
+              opacity: loading ? 0.7 : 1 // Lo hace un poco transparente
+            }}
+          >
+            {loading ? "Verificando..." : "Iniciar Sesión"}
           </button>
         </form>
 
-        <div style={{ marginTop: "24px", fontSize: "13px", color: "var(--ink-500)", textAlign: "left", background: "#f8fafc", padding: "12px", borderRadius: "6px" }}>
-          <strong>Credenciales de prueba:</strong>
-          <ul style={{ margin: "4px 0 0 16px", padding: 0 }}>
-            <li>Profesor: <code>rsalazar2504</code> / <code>1234</code></li>
-            <li>Inspector: <code>psoto3467</code> / <code>admin123</code></li>
-          </ul>
-        </div>
       </div>
     </div>
   );

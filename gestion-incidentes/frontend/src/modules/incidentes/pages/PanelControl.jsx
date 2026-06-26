@@ -24,7 +24,8 @@ function PanelControl() {
   const [editDescripcion, setEditDescripcion] = useState("");
   const [editPlan, setEditPlan] = useState("");
   const [editSolucion, setEditSolucion] = useState("");
-
+  const [tabActiva, setTabActiva] = useState("incidentes");
+  
   const [toast, setToast] = useState({
     mostrar: false,
     mensaje: "",
@@ -186,402 +187,243 @@ function PanelControl() {
 
   return (
     <div className="page">
-
-      <div className="card">
-        <div
-          className="card-header"
+      
+      <div style={{ display: "flex", gap: "12px", marginBottom: "20px", borderBottom: "1px solid var(--line-2)", paddingBottom: "16px" }}>
+        <button
+          onClick={() => setTabActiva("incidentes")}
           style={{
+            padding: "8px 16px",
+            background: tabActiva === "incidentes" ? "var(--teal-50)" : "transparent",
+            color: tabActiva === "incidentes" ? "var(--teal-800)" : "var(--ink-500)",
+            border: tabActiva === "incidentes" ? "1px solid var(--teal-700)" : "1px solid transparent",
+            borderRadius: "6px",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "all 0.2s",
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
-            flexWrap: "wrap",
-            gap: "16px",
+            gap: "8px"
           }}
         >
-          <div>
-            <h2>Incidentes Recientes</h2>
-            <p>
-              Haga clic en cualquier caso para abrir la ficha de seguimiento y
-              planes de acción.
-            </p>
-          </div>
+          <Icon name="grid" size={16} />
+          Incidentes
+        </button>
 
+        <button
+          onClick={() => setTabActiva("reincidencias")}
+          style={{
+            padding: "8px 16px",
+            background: tabActiva === "reincidencias" ? "var(--teal-50)" : "transparent",
+            color: tabActiva === "reincidencias" ? "var(--teal-800)" : "var(--ink-500)",
+            border: tabActiva === "reincidencias" ? "1px solid var(--teal-700)" : "1px solid transparent",
+            borderRadius: "6px",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "all 0.2s",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px"
+          }}
+        >
+          <Icon name="link" size={16} />
+          Reincidencias
+        </button>
+      </div>
+
+      {tabActiva === "incidentes" && (
+        <div className="card">
           <div
+            className="card-header"
             style={{
-              display: "grid",
-              gridTemplateColumns: "170px 180px minmax(220px, 1fr) auto",
-              gap: "12px",
+              display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
-              width: "100%",
+              flexWrap: "wrap",
+              gap: "16px",
             }}
           >
-            <input
-              type="date"
-              value={filtroFecha}
-              onChange={(e) => setFiltroFecha(e.target.value)}
-              style={{
-                height: "38px",
-                padding: "8px 12px",
-                borderRadius: "6px",
-                border: "1px solid var(--line-2)",
-                background: "var(--bg-2)",
-                color: "var(--ink-700)",
-                outline: "none",
-                width: "100%",
-              }}
-            />
-          <div style={{ position: "relative", width: "100%" }}>
-            <select
-              value={filtroGravedad}
-              onChange={(e) => setFiltroGravedad(e.target.value)}
-              style={{
-                height: "38px",
-                padding: "8px 36px 8px 12px",
-                borderRadius: "6px",
-                border: "1px solid var(--line-2)",
-                background: "var(--bg-2)",
-                color: "var(--ink-700)",
-                outline: "none",
-                width: "100%",
-                appearance: "none",
-                WebkitAppearance: "none",
-                cursor: "pointer",
-              }}
-            >
-              <option value="todas">Toda gravedad</option>
-              <option value="leve">Leve</option>
-              <option value="moderado">Moderado</option>
-              <option value="grave">Grave</option>
-            </select>
-            <span
-              style={{
-                position: "absolute",
-                right: "12px",
-                top: "50%",
-                transform: "translateY(-50%) rotate(90deg)",
-                color: "var(--ink-400)",
-                pointerEvents: "none",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Icon name="chev" size={14} />
-            </span>
-          </div>
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-              }}
-            >
-              <span
-                style={{
-                  position: "absolute",
-                  left: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  color: "var(--ink-400)",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Icon name="search" size={16} />
-              </span>
-
-              <input
-                type="text"
-                placeholder="Buscar estudiante..."
-                value={terminoBusqueda}
-                onChange={(e) => setTerminoBusqueda(e.target.value)}
-                style={{
-                  width: "100%",
-                  height: "38px",
-                  padding: "8px 34px 8px 36px",
-                  borderRadius: "6px",
-                  border: "1px solid var(--line-2)",
-                  fontSize: "14px",
-                  outline: "none",
-                  background: "var(--bg-2)",
-                }}
-              />
-
-              {terminoBusqueda && (
-                <button
-                  type="button"
-                  onClick={() => setTerminoBusqueda("")}
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    background: "transparent",
-                    border: "none",
-                    fontSize: "16px",
-                    cursor: "pointer",
-                    color: "var(--ink-400)",
-                  }}
-                >
-                  ×
-                </button>
-              )}
+            <div>
+              <h2>Incidentes Recientes</h2>
+              <p>
+                Haga clic en cualquier caso para abrir la ficha de seguimiento y
+                planes de acción.
+              </p>
             </div>
 
-            {(terminoBusqueda || filtroFecha || filtroGravedad !== "todas") && (
-              <button
-                type="button"
-                onClick={() => {
-                  setTerminoBusqueda("");
-                  setFiltroFecha("");
-                  setFiltroGravedad("todas");
-                }}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "170px 180px minmax(220px, 1fr) auto",
+                gap: "12px",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <input
+                type="date"
+                value={filtroFecha}
+                onChange={(e) => setFiltroFecha(e.target.value)}
                 style={{
                   height: "38px",
                   padding: "8px 12px",
-                  background: "transparent",
-                  border: "1px solid var(--line-2)",
                   borderRadius: "6px",
-                  cursor: "pointer",
-                  color: "var(--ink-600)",
-                  whiteSpace: "nowrap",
+                  border: "1px solid var(--line-2)",
+                  background: "var(--bg-2)",
+                  color: "var(--ink-700)",
+                  outline: "none",
+                  width: "100%",
+                }}
+              />
+              <div style={{ position: "relative", width: "100%" }}>
+                <select
+                  value={filtroGravedad}
+                  onChange={(e) => setFiltroGravedad(e.target.value)}
+                  style={{
+                    height: "38px",
+                    padding: "8px 36px 8px 12px",
+                    borderRadius: "6px",
+                    border: "1px solid var(--line-2)",
+                    background: "var(--bg-2)",
+                    color: "var(--ink-700)",
+                    outline: "none",
+                    width: "100%",
+                    appearance: "none",
+                    WebkitAppearance: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <option value="todas">Toda gravedad</option>
+                  <option value="leve">Leve</option>
+                  <option value="moderado">Moderado</option>
+                  <option value="grave">Grave</option>
+                </select>
+                <span
+                  style={{
+                    position: "absolute",
+                    right: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%) rotate(90deg)",
+                    color: "var(--ink-400)",
+                    pointerEvents: "none",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name="chev" size={14} />
+                </span>
+              </div>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
                 }}
               >
-                Limpiar
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div style={{ padding: "24px" }}>
-          {loading ? (
-            <p>Consultando a la base de datos...</p>
-          ) : incidentes.length === 0 ? (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "32px",
-                color: "var(--ink-500)",
-                border: "1px dashed var(--line)",
-                borderRadius: "8px",
-              }}
-            >
-              <Icon
-                name="search"
-                size={24}
-                style={{ marginBottom: "8px", color: "var(--ink-300)" }}
-              />
-              <p style={{ margin: 0 }}>
-                No se encontraron incidentes que coincidan con la búsqueda en
-                el backend.
-              </p>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              {incidentes.map((inc) => (
-                <div
-                  key={inc.id_i}
-                  onClick={() => abrirDetalles(inc)}
+                <span
                   style={{
-                    padding: "16px",
-                    border: "1px solid var(--line)",
-                    borderRadius: "8px",
-                    background: "#fff",
-                    cursor: "pointer",
-                    transition: "border-color 0.2s",
+                    position: "absolute",
+                    left: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "var(--ink-400)",
+                    display: "flex",
+                    alignItems: "center",
                   }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.borderColor = "var(--teal-600)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.borderColor = "var(--line)")
-                  }
                 >
-                  <div
+                  <Icon name="search" size={16} />
+                </span>
+
+                <input
+                  type="text"
+                  placeholder="Buscar estudiante..."
+                  value={terminoBusqueda}
+                  onChange={(e) => setTerminoBusqueda(e.target.value)}
+                  style={{
+                    width: "100%",
+                    height: "38px",
+                    padding: "8px 34px 8px 36px",
+                    borderRadius: "6px",
+                    border: "1px solid var(--line-2)",
+                    fontSize: "14px",
+                    outline: "none",
+                    background: "var(--bg-2)",
+                  }}
+                />
+
+                {terminoBusqueda && (
+                  <button
+                    type="button"
+                    onClick={() => setTerminoBusqueda("")}
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "8px",
-                      gap: "12px",
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      background: "transparent",
+                      border: "none",
+                      fontSize: "16px",
+                      cursor: "pointer",
+                      color: "var(--ink-400)",
                     }}
                   >
-                    <strong
-                      style={{ fontSize: "16px", color: "var(--teal-800)" }}
-                    >
-                      {inc.titulo_i}
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "13px",
-                        color: "var(--ink-500)",
-                        background: "var(--bg-2)",
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Folio: {inc.id_i}
-                    </span>
-                  </div>
+                    ×
+                  </button>
+                )}
+              </div>
 
-                  <p
-                    style={{
-                      margin: "0 0 12px 0",
-                      fontSize: "14px",
-                      color: "var(--ink-700)",
-                    }}
-                  >
-                    {inc.descripcion_i}
-                  </p>
-
-                  <div
-                    style={{
-                      paddingTop: "12px",
-                      borderTop: "1px solid var(--line)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: "12px",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "16px",
-                        fontSize: "13px",
-                        color: "var(--ink-500)",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                      >
-                        <Icon name="calendar" size={14} />
-                        {formatearFecha(inc.fecha_i)}
-                      </span>
-
-                      <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                      >
-                        <Icon name="users" size={14} />
-                        {inc.estudiantes_asociados?.join(", ")}
-                      </span>
-                      <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                          textTransform: "capitalize",
-                        }}
-                      >
-                        <Icon name="triangle" size={14} />
-                        {inc.gravedad || "Sin gravedad"}
-                      </span>
-
-                      <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                          color:
-                            inc.estado_i === "Formalizado"
-                              ? "var(--teal-700)"
-                              : "inherit",
-                          fontWeight:
-                            inc.estado_i === "Formalizado" ? "bold" : "normal",
-                        }}
-                      >
-                        <Icon name="shield" size={14} />
-                        {inc.estado_i}
-                      </span>
-                    </div>
-
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      {inc.estado_i !== "Formalizado" && (
-                        <button
-                          type="button"
-                          onClick={(e) => handleFormalizar(inc.id_i, e)}
-                          style={{
-                            padding: "4px 10px",
-                            background: "transparent",
-                            border: "1px solid var(--ink-300)",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                            fontSize: "12px",
-                          }}
-                        >
-                          Formalizar
-                        </button>
-                      )}
-
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          color: "var(--teal-700)",
-                          fontWeight: "600",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "2px",
-                        }}
-                      >
-                        Ver Ficha <Icon name="chev" size={12} />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {(terminoBusqueda || filtroFecha || filtroGravedad !== "todas") && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTerminoBusqueda("");
+                    setFiltroFecha("");
+                    setFiltroGravedad("todas");
+                  }}
+                  style={{
+                    height: "38px",
+                    padding: "8px 12px",
+                    background: "transparent",
+                    border: "1px solid var(--line-2)",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    color: "var(--ink-600)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Limpiar
+                </button>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
-      <div className="card" style={{ marginTop: "24px" }}>
-        <div className="card-header">
-          <h2>Reincidencias Registradas</h2>
-          <p>
-            Agrupaciones de incidentes relacionados que requieren seguimiento
-            por parte del equipo de convivencia.
-          </p>
-        </div>
-
-        <div style={{ padding: "24px" }}>
-          {loading ? (
-            <p>Cargando reincidencias desde Python...</p>
-          ) : reincidencias.length === 0 ? (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "32px",
-                color: "var(--ink-500)",
-                border: "1px dashed var(--line)",
-                borderRadius: "8px",
-              }}
-            >
-              <Icon
-                name="link"
-                size={24}
-                style={{ marginBottom: "8px", color: "var(--ink-300)" }}
-              />
-              <p style={{ margin: 0 }}>No hay reincidencias registradas aún.</p>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              {reincidencias.map((reincidencia) => {
-                const personasFoco = obtenerPersonasFoco(reincidencia);
-                const incidentesAsociados =
-                  reincidencia.incidentes_asociados || [];
-
-                return (
+          <div style={{ padding: "24px" }}>
+            {loading ? (
+              <p>Consultando a la base de datos...</p>
+            ) : incidentes.length === 0 ? (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "32px",
+                  color: "var(--ink-500)",
+                  border: "1px dashed var(--line)",
+                  borderRadius: "8px",
+                }}
+              >
+                <Icon
+                  name="search"
+                  size={24}
+                  style={{ marginBottom: "8px", color: "var(--ink-300)" }}
+                />
+                <p style={{ margin: 0 }}>
+                  No se encontraron incidentes que coincidan con la búsqueda en
+                  el backend.
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {incidentes.map((inc) => (
                   <div
-                    key={reincidencia.id_r}
-                    onClick={() => abrirDetalleReincidencia(reincidencia)}
+                    key={inc.id_i}
+                    onClick={() => abrirDetalles(inc)}
                     style={{
                       padding: "16px",
                       border: "1px solid var(--line)",
@@ -608,9 +450,8 @@ function PanelControl() {
                       <strong
                         style={{ fontSize: "16px", color: "var(--teal-800)" }}
                       >
-                        Reincidencia #{reincidencia.id_r}
+                        {inc.titulo_i}
                       </strong>
-
                       <span
                         style={{
                           fontSize: "13px",
@@ -621,8 +462,7 @@ function PanelControl() {
                           whiteSpace: "nowrap",
                         }}
                       >
-                        {incidentesAsociados.length} incidente
-                        {incidentesAsociados.length !== 1 ? "s" : ""}
+                        Folio: {inc.id_i}
                       </span>
                     </div>
 
@@ -633,7 +473,7 @@ function PanelControl() {
                         color: "var(--ink-700)",
                       }}
                     >
-                      {reincidencia.analisis || "Sin análisis registrado."}
+                      {inc.descripcion_i}
                     </p>
 
                     <div
@@ -663,10 +503,8 @@ function PanelControl() {
                             gap: "4px",
                           }}
                         >
-                          <Icon name="users" size={14} />
-                          {personasFoco.length > 0
-                            ? personasFoco.join(", ")
-                            : "Sin foco registrado"}
+                          <Icon name="calendar" size={14} />
+                          {formatearFecha(inc.fecha_i)}
                         </span>
 
                         <span
@@ -676,8 +514,19 @@ function PanelControl() {
                             gap: "4px",
                           }}
                         >
-                          <Icon name="calendar" size={14} />
-                          Revisión: {formatearFecha(reincidencia.fecha_revision)}
+                          <Icon name="users" size={14} />
+                          {inc.estudiantes_asociados?.join(", ")}
+                        </span>
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          <Icon name="triangle" size={14} />
+                          {inc.gravedad || "Sin gravedad"}
                         </span>
 
                         <span
@@ -685,34 +534,232 @@ function PanelControl() {
                             display: "flex",
                             alignItems: "center",
                             gap: "4px",
+                            color:
+                              inc.estado_i === "Formalizado"
+                                ? "var(--teal-700)"
+                                : "inherit",
+                            fontWeight:
+                              inc.estado_i === "Formalizado" ? "bold" : "normal",
                           }}
                         >
                           <Icon name="shield" size={14} />
-                          {reincidencia.encargado_seguimiento ||
-                            "Sin responsable"}
+                          {inc.estado_i}
                         </span>
                       </div>
 
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          color: "var(--teal-700)",
-                          fontWeight: "600",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "2px",
-                        }}
-                      >
-                        Ver Ficha <Icon name="chev" size={12} />
-                      </span>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        {inc.estado_i !== "Formalizado" && (
+                          <button
+                            type="button"
+                            onClick={(e) => handleFormalizar(inc.id_i, e)}
+                            style={{
+                              padding: "4px 10px",
+                              background: "transparent",
+                              border: "1px solid var(--ink-300)",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              fontSize: "12px",
+                            }}
+                          >
+                            Formalizar
+                          </button>
+                        )}
+
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            color: "var(--teal-700)",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "2px",
+                          }}
+                        >
+                          Ver Ficha <Icon name="chev" size={12} />
+                        </span>
+                      </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
+
+      {tabActiva === "reincidencias" && (
+        <div className="card"> 
+          <div className="card-header">
+            <h2>Reincidencias Registradas</h2>
+            <p>
+              Agrupaciones de incidentes relacionados que requieren seguimiento
+              por parte del equipo de convivencia.
+            </p>
+          </div>
+
+          <div style={{ padding: "24px" }}>
+            {loading ? (
+              <p>Cargando reincidencias desde Python...</p>
+            ) : reincidencias.length === 0 ? (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "32px",
+                  color: "var(--ink-500)",
+                  border: "1px dashed var(--line)",
+                  borderRadius: "8px",
+                }}
+              >
+                <Icon
+                  name="link"
+                  size={24}
+                  style={{ marginBottom: "8px", color: "var(--ink-300)" }}
+                />
+                <p style={{ margin: 0 }}>No hay reincidencias registradas aún.</p>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {reincidencias.map((reincidencia) => {
+                  const personasFoco = obtenerPersonasFoco(reincidencia);
+                  const incidentesAsociados =
+                    reincidencia.incidentes_asociados || [];
+
+                  return (
+                    <div
+                      key={reincidencia.id_r}
+                      onClick={() => abrirDetalleReincidencia(reincidencia)}
+                      style={{
+                        padding: "16px",
+                        border: "1px solid var(--line)",
+                        borderRadius: "8px",
+                        background: "#fff",
+                        cursor: "pointer",
+                        transition: "border-color 0.2s",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.borderColor = "var(--teal-600)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.borderColor = "var(--line)")
+                      }
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginBottom: "8px",
+                          gap: "12px",
+                        }}
+                      >
+                        <strong
+                          style={{ fontSize: "16px", color: "var(--teal-800)" }}
+                        >
+                          Reincidencia #{reincidencia.id_r}
+                        </strong>
+
+                        <span
+                          style={{
+                            fontSize: "13px",
+                            color: "var(--ink-500)",
+                            background: "var(--bg-2)",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {incidentesAsociados.length} incidente
+                          {incidentesAsociados.length !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+
+                      <p
+                        style={{
+                          margin: "0 0 12px 0",
+                          fontSize: "14px",
+                          color: "var(--ink-700)",
+                        }}
+                      >
+                        {reincidencia.analisis || "Sin análisis registrado."}
+                      </p>
+
+                      <div
+                        style={{
+                          paddingTop: "12px",
+                          borderTop: "1px solid var(--line)",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          gap: "12px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "16px",
+                            fontSize: "13px",
+                            color: "var(--ink-500)",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <Icon name="users" size={14} />
+                            {personasFoco.length > 0
+                              ? personasFoco.join(", ")
+                              : "Sin foco registrado"}
+                          </span>
+
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <Icon name="calendar" size={14} />
+                            Revisión: {formatearFecha(reincidencia.fecha_revision)}
+                          </span>
+
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <Icon name="shield" size={14} />
+                            {reincidencia.encargado_seguimiento ||
+                              "Sin responsable"}
+                          </span>
+                        </div>
+
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            color: "var(--teal-700)",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "2px",
+                          }}
+                        >
+                          Ver Ficha <Icon name="chev" size={12} />
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {incidenteDetalle && (
         <div
