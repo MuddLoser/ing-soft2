@@ -19,5 +19,26 @@
             "Seguimiento con apoderado"
         ],
         "analisis": "Estudiantes conflictivos "
+    },
+    {
+        "id_r": 2,
+        "persona_foco": "Miguel Jackson, Florencia Casas",
+        "personas_foco": [
+            "Miguel Jackson",
+            "Florencia Casas"
+        ],
+        "personas_involucradas": [],
+        "incidentes_asociados": [
+            2,
+            3,
+            4
+        ],
+        "encargado_seguimiento": "Inspectora General — Andrea Pinto",
+        "fecha_revision": "2026-07-10",
+        "objetivos": [
+            "Reducir la frecuencia de incidentes",
+            "Seguimiento con apoderado"
+        ],
+        "analisis": "hola amigos"
     }
 ]

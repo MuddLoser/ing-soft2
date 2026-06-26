@@ -123,6 +123,14 @@ class EdicionIncidentePayload(BaseModel):
     plan_accion: str
     solucion: str
 
+@app.put("/incidentes/{id_incidente}/formalizar")
+async def formalizar(id_incidente: int):
+    try:
+        incidente = gestor.formalizar_incidente(id_incidente)
+        return incidente.to_dict()
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
+
 @app.put("/incidentes/{id_incidente}/solucion")
 async def asignar_solucion(id_incidente: int, payload: SolucionPayload):
     try:
@@ -154,7 +162,7 @@ async def obtener_reincidencia(id_reincidencia: int):
 async def buscar_incidentes(termino: str = None, fecha: str = None): 
     try:
         if not termino or not termino.strip():
-            resultados = gestor.obtener_historial()
+            resultados = gestor.obtener_todos()
         else:
             resultados = gestor.filtrar_por_estudiante(termino)
 
@@ -202,23 +210,3 @@ async def editar_incidente_completo(id_incidente: int, payload: EdicionIncidente
     except Exception as e:
         print(f"Error al editar: {e}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
-    
-@app.post("/reincidencias")
-async def crear_reincidencia(payload: ReincidenciaPayload):
-    try:
-        nueva = gestor_reincidencias.crear_reincidencia(
-            persona_foco=payload.persona_foco,
-            personas_involucradas=payload.personas_involucradas,
-            incidentes=payload.incidentes_asociados,
-            encargado=payload.encargado_seguimiento,
-            fecha_revision=payload.fecha_revision,
-            objetivos=payload.objetivos,
-            analisis=payload.analisis
-        )
-        return nueva.to_dict()
-    except ValueError as err:
-        raise HTTPException(status_code=400, detail=str(err))
-
-@app.get("/reincidencias")
-async def obtener_reincidencias():
-    return [reincidencia.to_dict() for reincidencia in gestor_reincidencias.obtener_todas()]
