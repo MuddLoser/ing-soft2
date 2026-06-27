@@ -1,3 +1,23 @@
 [
-    
+    {
+        "id_r": 1,
+        "persona_foco": "Benjamín Muñoz",
+        "personas_foco": [
+            "Benjamín Muñoz"
+        ],
+        "personas_involucradas": [
+            "Antonia Rivas"
+        ],
+        "incidentes_asociados": [
+            12,
+            16
+        ],
+        "encargado_seguimiento": "Inspectora General — Andrea Pinto",
+        "fecha_revision": "2026-07-08",
+        "objetivos": [
+            "Acompañamiento psicosocial",
+            "Seguimiento con apoderado"
+        ],
+        "analisis": "Se conversará con Benjamín sobre sus sentimientos, que le aflige, y por qué actúa de esa manera."
+    }
 ]

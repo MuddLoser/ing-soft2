@@ -4,14 +4,14 @@
         "titulo_i": "Discusión entre alumnos durante el recreo",
         "descripcion_i": "El día jueves 11 a las 10:10, durante el recreo de la mañana, los alumnos Benjamín Muñoz del 3°B y Antonia Rivas del 4°C fueron sorprendidos discutiendo a viva voz en el patio, usando lenguaje soez e insultos personales.",
         "fecha_i": "2026-06-11T10:10",
-        "estado_i": "Reportado",
+        "estado_i": "Formalizado",
         "estudiantes_asociados": [
             "Antonia Rivas",
             "Benjamín Muñoz"
         ],
         "reportado_por": "Inspector general - Luis Cárcamo",
-        "solucion_i": "",
-        "plan_accion_i": "",
+        "solucion_i": "Anotación negativa para ambos alumnos.",
+        "plan_accion_i": "Se contactó a los padres de los alumnos y se les hizo saber sobre lo que hicieron sus hijos.",
         "gravedad": "moderado",
         "lugar": "Patio principal",
         "categorias": [
@@ -57,6 +57,65 @@
         "categorias": [
             "Agresión física",
             "Conflicto entre pares"
+        ]
+    },
+    {
+        "id_i": 15,
+        "titulo_i": "Estudiantes se escapan de clases",
+        "descripcion_i": "Los alumnos Tomás Herrera y Camila Soto fueron sorprendidos conversando en el patio ya terminado el horario de recreo, habiendose fugado de clase.",
+        "fecha_i": "2026-06-17T13:00",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Tomás Herrera",
+            "Camila Soto"
+        ],
+        "reportado_por": "Inspectora - Andrea Pinto",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "moderado",
+        "lugar": "Comedor",
+        "categorias": [
+            "Conducta disruptiva en aula",
+            "Ausentismo / Atrasos"
+        ]
+    },
+    {
+        "id_i": 16,
+        "titulo_i": "Alumno insulta a profesor en clases",
+        "descripcion_i": "Durante jornada de clases con encargada de convivencia como asistente invitada el alumno Benjamín Muñoz proclama en voz alta un insulto directamente a su profesor.",
+        "fecha_i": "2026-06-26T14:23",
+        "estado_i": "Formalizado",
+        "estudiantes_asociados": [
+            "Benjamín Muñoz"
+        ],
+        "reportado_por": "Encargada de Convivencia - Paula Soto",
+        "solucion_i": "El alumno recibió anotación negativa.",
+        "plan_accion_i": "El alumno fue llevado a inspectoría para interrogación y charla disciplinaria. ",
+        "gravedad": "grave",
+        "lugar": "Comedor",
+        "categorias": [
+            "Conducta disruptiva en aula",
+            "Agresión verbal",
+            "Falta de respeto"
+        ]
+    },
+    {
+        "id_i": 17,
+        "titulo_i": "Alumno duerme en clase",
+        "descripcion_i": "El alumno Miguel Jackson es sorprendido durmiendo en plena clase de matemáticas.",
+        "fecha_i": "2026-06-10T14:29",
+        "estado_i": "Reportado",
+        "estudiantes_asociados": [
+            "Miguel Jackson"
+        ],
+        "reportado_por": "Profesor de Matemáticas - Rodrigo Salazar",
+        "solucion_i": "",
+        "plan_accion_i": "",
+        "gravedad": "leve",
+        "lugar": "Sala de clases",
+        "categorias": [
+            "Falta de respeto",
+            "Conducta disruptiva en aula"
         ]
     }
 ]
