@@ -1,13 +1,14 @@
 import Icon from "../shared/icons/Icon";
 
-function Sidebar({ vistaActual, cambiarVista }) {
+function Sidebar({ vistaActual, cambiarVista, onLogout }) {
+  const rolUsuario = localStorage.getItem("usuario_rol");
+
   const items = [
-    { id: "dash", label: "Panel de Control", icon: "grid" },
-    { id: "incident", label: "Registro de Incidentes", icon: "triangle" },
-    { id: "dir", label: "Directorio Estudiantil", icon: "users" },
-    { id: "rep", label: "Reportes Académicos", icon: "chart" },
-    { id: "cfg", label: "Configuración", icon: "gear" },
+    { id: "dash", label: "Panel de Control", icon: "grid", rolesPermitidos: ["inspector"]},
+    { id: "reinc", label: "Reincidencias", icon: "link", rolesPermitidos: ["inspector"] },
+    { id: "dir", label: "Directorio Estudiantil", icon: "users", rolesPermitidos: ["profesor", "inspector"] },
   ];
+  const itemsVisibles = items.filter(item => item.rolesPermitidos.includes(rolUsuario));
 
   return (
     <aside className="sidebar">
@@ -22,12 +23,11 @@ function Sidebar({ vistaActual, cambiarVista }) {
             <br />
             Escolar
           </div>
-          <div className="sub">Convivencia y Disciplina</div>
         </div>
       </div>
 
       <nav className="nav">
-        {items.map((item) => (
+        {itemsVisibles.map((item) => (
           <div
             key={item.id}
             className={`nav-item ${vistaActual === item.id ? "active" : ""}`}
@@ -52,7 +52,7 @@ function Sidebar({ vistaActual, cambiarVista }) {
           Registrar Incidente
         </button>
 
-        <div className="logout">
+        <div className="logout" onClick={onLogout} style={{ cursor: "pointer" }}>
           <Icon name="logout" size={18} />
           <span>Cerrar Sesión</span>
         </div>

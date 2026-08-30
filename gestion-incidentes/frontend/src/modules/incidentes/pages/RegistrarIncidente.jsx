@@ -1,15 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect} from "react";
 import Icon from "../../../shared/icons/Icon";
-import { registrarIncidente } from "../../../api/incidentesApi";
-
-const TODOS_LOS_ESTUDIANTES = [
-  { id: 1, name: "Martina Perez", grade: "2°A", initials: "MV" },
-  { id: 2, name: "Joaquín López", grade: "2°A", initials: "JL" },
-  { id: 3, name: "Benjamín Muñoz", grade: "3°B", initials: "BM" },
-  { id: 4, name: "Sofía Henriquez", grade: "1°C", initials: "SH" },
-  { id: 5, name: "Mateo Sanhueza", grade: "4°A", initials: "MS" },
-  { id: 6, name: "Miguel Jackson", grade: "2°B", initials: "MJ" },
-];
+import { registrarIncidente , getEstudiantes} from "../../../api/incidentesApi";
 
 const categories = [
   "Agresión verbal",
@@ -24,17 +15,27 @@ const categories = [
 ];
 
 function RegistrarIncidente(props) {
+
+  const [listaAlumnos, setListaAlumnos] = useState([]);
+
+  useEffect(() => {
+    getEstudiantes()
+      .then((data) => setListaAlumnos(data))
+      .catch(console.error);
+  }, []);
+
   const fechaActual = new Date();
   fechaActual.setMinutes(fechaActual.getMinutes() - fechaActual.getTimezoneOffset());
   const fechaActualFormato = fechaActual.toISOString().slice(0, 16);
 
   const [titulo, setTitulo] = useState("");
-  const [severity, setSeverity] = useState("moderado");
+  const [gravedad, setGravedad] = useState("moderado");
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [description, setDescription] = useState("");
   const [adultoResponsable, setAdultoResponsable] = useState("");
-  const [selectedCats, setSelectedCats] = useState(new Set(["Conducta disruptiva en aula"]));
+  const [lugar, setLugar] = useState("");
+  const [categorias, setCategorias] = useState(new Set(["Conducta disruptiva en aula"]));
   const [files, setFiles] = useState([{ name: "fotografía-pasillo.jpg", size: "1.2 MB" }]);
   const [fechaHora, setFechaHora] = useState(fechaActualFormato);
 
@@ -42,9 +43,12 @@ function RegistrarIncidente(props) {
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
 
+  const [toast, setToast] = useState({ mostrar: false, mensaje: "" });
+  const mostrarNotificacion = (mensaje) => { setToast({ mostrar: true, mensaje });};
+
   const estudiantesFiltrados = searchTerm.trim() === "" 
     ? [] 
-    : TODOS_LOS_ESTUDIANTES.filter(estudiante => 
+    : listaAlumnos.filter(estudiante => 
         estudiante.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         !students.some(agregado => agregado.id === estudiante.id)
       );
@@ -59,13 +63,13 @@ function RegistrarIncidente(props) {
   };
 
   const toggleCat = (category) => {
-    const next = new Set(selectedCats);
+    const next = new Set(categorias);
     if (next.has(category)) {
       next.delete(category);
     } else {
       next.add(category);
     }
-    setSelectedCats(next);
+    setCategorias(next);
   };
 
   const removeFile = (index) => {
@@ -78,6 +82,8 @@ function RegistrarIncidente(props) {
     if (!adultoResponsable.trim()) return "Debe seleccionar un adulto responsable.";
     if (students.length === 0) return "Debe asociar al menos un estudiante.";
     if (!fechaHora.trim()) return "Debe seleccionar la fecha y hora en que ocurrió el incidente.";
+    if (!lugar) return "Debe seleccionar el lugar del incidente.";
+    if (categorias.size === 0) return "Debe seleccionar al menos una categoría.";
     return null;
   };
 
@@ -97,13 +103,17 @@ function RegistrarIncidente(props) {
         fecha: fechaHora,
         estudiantes: students.map((student) => student.name),
         nombre_docente: adultoResponsable,
+        gravedad: gravedad,
+        lugar: lugar,
+        categorias: Array.from(categorias)
+        
     };
 
     try {
       setLoading(true);
       const incidenteCreado = await registrarIncidente(payload);
 
-      setMensaje(`Incidente registrado correctamente. Folio: ${incidenteCreado.id_i}`);
+      mostrarNotificacion(`Incidente registrado correctamente. Folio: ${incidenteCreado.id_i}`);
 
       setTitulo("");
       setDescription("");
@@ -113,8 +123,9 @@ function RegistrarIncidente(props) {
       if (props.onSwitch) {
         setTimeout(() => {
           props.onSwitch();
-        }, 1500);
+        }, 2500);
       }
+
     } catch (err) {
       console.error(err);
       setError("No se pudo registrar el incidente. Revise la conexión con el backend.");
@@ -233,9 +244,9 @@ function RegistrarIncidente(props) {
 
             <div className="field">
               <label>Lugar del Incidente</label>
-              <select defaultValue="">
+              <select value={lugar} onChange={(e) => setLugar(e.target.value)}>
                 <option value="" disabled>Seleccione ubicación</option>
-                <option>Sala de clases — 2°A</option>
+                <option>Sala de clases</option>
                 <option>Patio principal</option>
                 <option>Comedor</option>
                 <option>Pasillo segundo piso</option>
@@ -244,7 +255,6 @@ function RegistrarIncidente(props) {
                 <option>Baños</option>
                 <option>Fuera del establecimiento</option>
               </select>
-              <span className="hint">Campo visual preparado para próximas iteraciones.</span>
             </div>
           </div>
 
@@ -259,8 +269,8 @@ function RegistrarIncidente(props) {
                 <button
                   key={item.key}
                   type="button"
-                  className={severity === item.key ? `active ${item.key}` : ""}
-                  onClick={() => setSeverity(item.key)}
+                  className={gravedad === item.key ? `active ${item.key}` : ""}
+                  onClick={() => setGravedad(item.key)}
                 >
                   <span className="pill-dot"></span>
                   {item.label}
@@ -340,11 +350,11 @@ function RegistrarIncidente(props) {
               onChange={(event) => setAdultoResponsable(event.target.value)}
             >
               <option value="" disabled>Seleccione docente o inspector</option>
-              <option value="Profesora Carla Mendoza — Lenguaje">Profesora Carla Mendoza — Lenguaje</option>
-              <option value="Profesor Rodrigo Salazar — Matemáticas">Profesor Rodrigo Salazar — Matemáticas</option>
-              <option value="Inspectora Andrea Pinto">Inspectora Andrea Pinto</option>
-              <option value="Inspector general Luis Cárcamo">Inspector general Luis Cárcamo</option>
-              <option value="Encargada de Convivencia — Paula Soto">Encargada de Convivencia — Paula Soto</option>
+              <option value="Profesora de Lenguaje - Carla Mendoza">Profesora de Lenguaje - Carla Mendoza</option>
+              <option value="Profesor de Matemáticas - Rodrigo Salazar">Profesor de Matemáticas - Rodrigo Salazar</option>
+              <option value="Inspectora - Andrea Pinto">Inspectora - Andrea Pinto</option>
+              <option value="Inspector general - Luis Cárcamo">Inspector general - Luis Cárcamo</option>
+              <option value="Encargada de Convivencia - Paula Soto">Encargada de Convivencia - Paula Soto</option>
             </select>
           </div>
         </section>
@@ -391,7 +401,7 @@ function RegistrarIncidente(props) {
 
           <div className="tag-grid">
             {categories.map((category) => {
-              const selected = selectedCats.has(category);
+              const selected = categorias.has(category);
               return (
                 <div
                   key={category}
@@ -408,73 +418,13 @@ function RegistrarIncidente(props) {
           </div>
         </section>
 
-        <section className="section">
-          <h3 className="section-title">
-            <span className="ico"><Icon name="shield" size={16} /></span>
-            Acciones Inmediatas Tomadas
-          </h3>
-
-          <div className="grid-2">
-            <div className="field">
-              <label>Medida aplicada</label>
-              <select defaultValue="">
-                <option value="" disabled>Seleccione medida</option>
-                <option>Diálogo formativo con los involucrados</option>
-                <option>Derivación a Encargado de Convivencia</option>
-                <option>Citación a apoderado</option>
-                <option>Suspensión preventiva</option>
-                <option>Mediación entre pares</option>
-                <option>Anotación en libro de clases</option>
-                <option>Ninguna por el momento</option>
-              </select>
-            </div>
-
-            <div className="field">
-              <label>Notificación al apoderado</label>
-              <select defaultValue="pendiente">
-                <option value="pendiente">Pendiente</option>
-                <option value="realizada">Realizada presencial</option>
-                <option value="telef">Realizada telefónica</option>
-                <option value="email">Realizada por correo electrónico</option>
-                <option value="no">No corresponde</option>
-              </select>
-            </div>
-          </div>
-        </section>
-
-        <section className="section">
-          <h3 className="section-title">
-            <span className="ico"><Icon name="paper" size={16} /></span>
-            Evidencia y Adjuntos
-          </h3>
-          <div className="upload">
-            <div className="up-icon"><Icon name="paper" size={18} /></div>
-            <div><strong>Haga clic para cargar</strong> o arrastre archivos aquí</div>
-          </div>
-
-          {files.length > 0 && (
-            <div className="file-list">
-              {files.map((file, index) => (
-                <div className="file-row" key={index}>
-                  <div className="file-thumb"><Icon name="paper" size={15} /></div>
-                  <div className="name">{file.name}</div>
-                  <div className="meta">{file.size}</div>
-                  <button className="x" onClick={() => removeFile(index)}><Icon name="x" size={16} /></button>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
         <div className="form-actions">
           <div className="draft-status">
-            <span className="dot"></span>
-            Borrador guardado automáticamente · simulación
+            
           </div>
 
           <div className="actions-right">
-            <button type="button" className="btn-ghost">Cancelar</button>
-            <button type="button" className="btn-ghost">Guardar borrador</button>
+            
             <button
               type="button"
               className="btn-solid"
@@ -487,6 +437,23 @@ function RegistrarIncidente(props) {
           </div>
         </div>
       </div>
+
+      {toast.mostrar && (
+        <div style={{
+          position: "fixed", bottom: "24px", right: "24px",
+          backgroundColor: "#f0fdf4",
+          color: "#166534",
+          border: "1px solid #4ade80",
+          padding: "16px 24px", borderRadius: "8px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+          display: "flex", alignItems: "center", gap: "12px",
+          zIndex: 999999, fontWeight: "600", fontSize: "14px",
+          transition: "all 0.3s ease-in-out"
+        }}>
+        {toast.mensaje}
+        </div>
+      )}
+
     </div>
   );
 }

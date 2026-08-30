@@ -1,21 +1,23 @@
 import json
 import os
-from datetime import datetime
-
-from prototipo.modelos import incidente
+from datetime import datetime   
 
 ARCHIVO_DATOS = os.path.join(os.path.dirname(__file__), 'incidentes.json')
 
 class Incidente:
-    def __init__(self, id_i, titulo_i, descripcion_i, fecha_i, estado_i, estudiantes_asociados, reportado_por, solucion_i=""):
+    def __init__(self, id_i, titulo_i, descripcion_i, fecha_i, estado_i, estudiantes_asociados, reportado_por, solucion_i="", plan_accion_i="", gravedad="Moderado", lugar="", categorias=None):
         self.id_i = id_i
         self.titulo_i = titulo_i
         self.descripcion_i = descripcion_i
         self.fecha_i = fecha_i
         self.estado_i = estado_i
         self.estudiantes_asociados = estudiantes_asociados
+        self.gravedad = gravedad
+        self.lugar = lugar
+        self.categorias = categorias if categorias is not None else []
         self.reportado_por = reportado_por
         self.solucion_i = solucion_i
+        self.plan_accion_i = plan_accion_i
 
     def to_dict(self):
         return {
@@ -26,7 +28,11 @@ class Incidente:
             "estado_i": self.estado_i,
             "estudiantes_asociados": self.estudiantes_asociados,
             "reportado_por": self.reportado_por,
-            "solucion_i": self.solucion_i
+            "solucion_i": self.solucion_i,
+            "plan_accion_i": self.plan_accion_i,
+            "gravedad": self.gravedad,
+            "lugar": self.lugar,
+            "categorias": self.categorias
         }
 
     @classmethod
@@ -39,7 +45,11 @@ class Incidente:
             data["estado_i"],
             data.get("estudiantes_asociados", []),
             data.get("reportado_por", "Desconocido"),
-            data.get("solucion_i", "")
+            data.get("solucion_i", ""),
+            data.get("plan_accion_i", ""),
+            data.get("gravedad", "moderado"),
+            data.get("lugar", ""),
+            data.get("categorias", [])
         )
 
     def imprimir_informacion(self):
@@ -53,6 +63,93 @@ class Incidente:
         print(f"DESCRIPCIÓN  :\n{self.descripcion_i}")
         print(f"SOLUCIÓN     : {self.solucion_i if self.solucion_i else 'Sin solución registrada'}")
 
+
+class IncidenteRepository:
+    def cargar_todos(self):
+        if not os.path.exists(ARCHIVO_DATOS):
+            return []
+        try:
+            with open(ARCHIVO_DATOS, 'r', encoding='utf-8') as archivo:
+                datos = json.load(archivo)
+                return [Incidente.from_dict(d) for d in datos]
+        except json.JSONDecodeError:
+            return []
+
+    def guardar_todos(self, lista_incidentes):
+        with open(ARCHIVO_DATOS, 'w', encoding='utf-8') as archivo:
+            datos = [inc.to_dict() for inc in lista_incidentes]
+            json.dump(datos, archivo, indent=4, ensure_ascii=False)
+
+
+class GestorCasos:
+    def __init__(self, repositorio):
+        self.repo = repositorio
+        self.incidentes = self.repo.cargar_todos()
+
+    def reportar_incidente(self, titulo, descripcion, estudiantes, nombre_docente, gravedad="Moderado", lugar="", categorias=None):
+        if not nombre_docente or not nombre_docente.strip():
+            raise ValueError("El nombre del adulto responsable es obligatorio.")
+        if not titulo or not titulo.strip():
+            raise ValueError("El incidente debe tener un titulo.")
+        if not descripcion or not descripcion.strip():
+            raise ValueError("Debe ingresar una descripcion.")
+
+        nuevo_id = max([inc.id_i for inc in self.incidentes], default=0) + 1
+        fecha_actual = datetime.now().strftime("%d/%m/%Y   %H:%M")
+        estado_inicial = "Reportado"
+
+        nuevo_incidente = Incidente(
+            id_i=nuevo_id,
+            titulo_i=titulo,
+            descripcion_i=descripcion,
+            fecha_i=fecha_actual,
+            estado_i=estado_inicial,
+            estudiantes_asociados=estudiantes,
+            reportado_por=nombre_docente,
+            gravedad=gravedad,
+            lugar=lugar,
+            categorias=categorias or []
+        )
+        
+        self.incidentes.append(nuevo_incidente)
+        self.repo.guardar_todos(self.incidentes)
+        return nuevo_incidente
+
+    def buscar_por_id(self, id_incidente):
+        for incidente in self.incidentes:
+            if str(incidente.id_i) == str(id_incidente):
+                return incidente
+        return None
+
+    def obtener_todos(self):
+        return self.incidentes
+    
+    def obtener_historial(self):
+        """Devuelve la lista completa de incidentes para el panel."""
+        return self.incidentes
+
+    def filtrar_por_estudiante(self, termino):
+        """Busca coincidencias parciales en los nombres de los estudiantes."""
+        termino_limpio = termino.lower().strip()
+        resultados = []
+        
+        for inc in self.incidentes:
+            # Revisamos si el término de búsqueda está en alguno de los estudiantes de este incidente
+            if inc.estudiantes_asociados:
+                for estudiante in inc.estudiantes_asociados:
+                    if termino_limpio in estudiante.lower():
+                        resultados.append(inc)
+                        break # Si encuentra coincidencia, agrega el incidente y pasa al siguiente
+                        
+        return resultados
+
+    def filtrar_por_gravedad(self, gravedad):
+        gravedad_limpia = gravedad.lower().strip()
+        return [
+            inc for inc in self.incidentes
+            if (inc.gravedad or "").lower().strip() == gravedad_limpia
+        ]
+    
     def formalizar_incidente(self, id_incidente):
         incidente = self.buscar_por_id(id_incidente)
         if not incidente:
@@ -63,7 +160,7 @@ class Incidente:
         self.repo.guardar_todos(self.incidentes)
         return incidente
     
-    def asignar_solucion(self, id_incidente, solucion):
+    def asignar_solucion(self, id_incidente, plan_accion, solucion):
         incidente = self.buscar_por_id(id_incidente)
         if not incidente:
             raise ValueError("Incidente no encontrado.")
@@ -71,6 +168,8 @@ class Incidente:
             raise ValueError("El incidente debe estar formalizado.")
         if not solucion.strip():
             raise ValueError("Debe ingresar una solución.")
+        
+        incidente.plan_accion_i = plan_accion
         incidente.solucion_i = solucion
         self.repo.guardar_todos(self.incidentes)
         return incidente
@@ -96,60 +195,6 @@ class Incidente:
         self.repo.guardar_todos(self.incidentes)
         return incidente
 
-class IncidenteRepository:
-    def cargar_todos(self):
-        if not os.path.exists(ARCHIVO_DATOS):
-            return []
-        try:
-            with open(ARCHIVO_DATOS, 'r', encoding='utf-8') as archivo:
-                datos = json.load(archivo)
-                return [Incidente.from_dict(d) for d in datos]
-        except json.JSONDecodeError:
-            return []
-
-    def guardar_todos(self, lista_incidentes):
-        with open(ARCHIVO_DATOS, 'w', encoding='utf-8') as archivo:
-            datos = [inc.to_dict() for inc in lista_incidentes]
-            json.dump(datos, archivo, indent=4, ensure_ascii=False)
-
-
-class GestorCasos:
-    def __init__(self, repositorio):
-        self.repo = repositorio
-        self.incidentes = self.repo.cargar_todos()
-
-    def reportar_incidente(self, titulo, descripcion, estudiantes, nombre_docente):
-        if not nombre_docente or not nombre_docente.strip():
-            raise ValueError("El nombre del adulto responsable es obligatorio.")
-        if not titulo or not titulo.strip():
-            raise ValueError("El incidente debe tener un titulo.")
-        if not descripcion or not descripcion.strip():
-            raise ValueError("Debe ingresar una descripcion.")
-
-        nuevo_id = max([inc.id_i for inc in self.incidentes], default=0) + 1
-        fecha_actual = datetime.now().strftime("%d/%m/%Y %H:%M")
-        estado_inicial = "Reportado"
-
-        nuevo_incidente = Incidente(
-            id_i=nuevo_id,
-            titulo_i=titulo,
-            descripcion_i=descripcion,
-            fecha_i=fecha_actual,
-            estado_i=estado_inicial,
-            estudiantes_asociados=estudiantes,
-            reportado_por=nombre_docente
-        )
-        
-        self.incidentes.append(nuevo_incidente)
-        self.repo.guardar_todos(self.incidentes)
-        return nuevo_incidente
-
-    def buscar_por_id(self, id_buscar):
-        return next((inc for inc in self.incidentes if inc.id_i == id_buscar), None)
-
-    def obtener_todos(self):
-        return self.incidentes
-
 
 def main():
     repositorio = IncidenteRepository()
@@ -162,9 +207,10 @@ def main():
         print("2. Abrir un incidente existente")
         print("3. Formalizar incidente")
         print("4. Asignar solución")
-        print("5. Salir")
+        print("5. Editar incidente")
+        print("6. Ver historial")
 
-        opcion = input("Seleccione una opción (1-5): ").strip()
+        opcion = input("Seleccione una opción (1-6): ").strip()
         
         if opcion == '1':
             print("\n-- REPORTAR NUEVO INCIDENTE --")
@@ -175,7 +221,6 @@ def main():
             estudiantes_input = input("Estudiantes involucrados (separados por coma): ")
             estudiantes = [e.strip() for e in estudiantes_input.split(',') if e.strip()]
             
-            # La UI le entrega los datos crudos al Gestor para que haga el trabajo
             nuevo_inc = gestor.reportar_incidente(titulo, descripcion, estudiantes, nombre_docente)
             print("\nIncidente guardado con éxito.")
             nuevo_inc.imprimir_informacion()
@@ -273,6 +318,60 @@ def main():
 
             except ValueError as e:
                 print(f"\nError: {e}")
+        elif opcion == '6':
+            print("\n-- VER HISTORIAL --")
+
+            historial = gestor.obtener_historial()
+
+            if not historial:
+                print("No existen incidentes previamente formalizados.")
+                continue
+
+            print("1. Ver todo el historial")
+            print("2. Filtrar por fecha")
+            print("3. Filtrar por estudiante")
+            print("4. Filtrar por gravedad")
+
+            filtro = input("Seleccione una opción: ").strip()
+
+            if filtro == "1":
+                resultados = historial
+
+            elif filtro == "2":
+                fecha = input("Ingrese la fecha (dd/mm/aaaa): ").strip()
+                resultados = gestor.filtrar_por_fecha(fecha)
+
+            elif filtro == "3":
+                estudiante = input("Ingrese el nombre del estudiante: ").strip()
+                resultados = gestor.filtrar_por_estudiante(estudiante)
+
+            elif filtro == "4":
+                print("\nSeleccione la gravedad:")
+                print("1. Leve")
+                print("2. Moderada")
+                print("3. Alta")
+
+                opcion = input("Opción: ").strip()
+
+                if opcion == "1":
+                    resultados = gestor.filtrar_por_gravedad("Leve")
+                elif opcion == "2":
+                    resultados = gestor.filtrar_por_gravedad("Moderada")
+                elif opcion == "3":
+                    resultados = gestor.filtrar_por_gravedad("Alta")
+                else:
+                    print("Opción inválida.")
+                    continue
+
+            else:
+                print("Opción inválida.")
+                continue
+
+            if not resultados:
+                print("No se encontraron incidentes con los criterios entregados.")
+            else:
+                for incidente in resultados:
+                    incidente.imprimir_informacion()
 
 if __name__ == "__main__":
     main()
